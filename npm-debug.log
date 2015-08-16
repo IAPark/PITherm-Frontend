@@ -1,0 +1,35 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'angular2#2.0.0-alpha.8.dev' ]
+2 info using npm@2.11.3
+3 info using node@v0.12.7
+4 verbose config Skipping project config: C:\Users\Isaac/.npmrc. (matches userconfig)
+5 verbose install initial load of C:\Users\Isaac\package.json
+6 verbose installManyTop reading scoped package data from C:\Users\Isaac\node_modules\bower\package.json
+7 info package.json bower@1.4.1 No license field.
+8 verbose readDependencies loading dependencies from C:\Users\Isaac\package.json
+9 silly cache add args [ 'angular2#2.0.0-alpha.8.dev', null ]
+10 verbose cache add spec angular2#2.0.0-alpha.8.dev
+11 silly cache add parsed spec { raw: 'angular2#2.0.0-alpha.8.dev',
+11 silly cache add   scope: null,
+11 silly cache add   name: null,
+11 silly cache add   rawSpec: 'angular2#2.0.0-alpha.8.dev',
+11 silly cache add   spec: 'C:\\Users\\Isaac\\WebstormProjects\\PITherm-front-end\\angular2#2.0.0-alpha.8.dev',
+11 silly cache add   type: 'local' }
+12 error addLocal Could not install C:\Users\Isaac\WebstormProjects\PITherm-front-end\angular2#2.0.0-alpha.8.dev
+13 verbose stack Error: ENOENT, open 'C:\Users\Isaac\WebstormProjects\PITherm-front-end\angular2#2.0.0-alpha.8.dev'
+13 verbose stack     at Error (native)
+14 verbose cwd C:\Users\Isaac\WebstormProjects\PITherm-front-end
+15 error Windows_NT 6.3.9600
+16 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "angular2#2.0.0-alpha.8.dev"
+17 error node v0.12.7
+18 error npm  v2.11.3
+19 error path C:\Users\Isaac\WebstormProjects\PITherm-front-end\angular2#2.0.0-alpha.8.dev
+20 error code ENOENT
+21 error errno -4058
+22 error enoent ENOENT, open 'C:\Users\Isaac\WebstormProjects\PITherm-front-end\angular2#2.0.0-alpha.8.dev'
+22 error enoent This is most likely not a problem with npm itself
+22 error enoent and is related to npm not being able to find a file.
+23 verbose exit [ -4058, true ]

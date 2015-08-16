@@ -1,0 +1,20 @@
+{
+  "name": "PITherm-front-end",
+  "version": "0.0.0",
+  "authors": [
+    "Isaac Park <isaac.a.park@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "traceur-runtime": "~0.0.91",
+    "system.js": "~0.18.8",
+    "materialize": "~0.97.0"
+  }
+}
