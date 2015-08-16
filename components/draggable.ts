@@ -35,10 +35,11 @@ export class Draggable {
 
     private start_left: number;
     private start_top: number;
+    private start_value: number;
 
     range: number;
     value: number;
-    scale: number
+    scale: number;
     direction: Direction;
     constructor() {
         this.dragging = false;
@@ -47,6 +48,9 @@ export class Draggable {
         }
         this.left = 0;
         this.top = 0;
+        this.start_left = 0;
+        this.start_top = 0;
+        this.start_value = 0;
 
         if(!this.value) {
             this.value = 0;
@@ -61,15 +65,22 @@ export class Draggable {
     }
 
     update(mouseX: number, mouseY: number){
-        this.value += mouseX - this.start_left;
-        this.left = this.value;
-
-        this.start_left = mouseX;
-        this.start_top = mouseY;
+        if(this.dragging) {
+            this.value = mouseX/this.scale - (this.start_left/this.scale - this.start_value);
+            if(this.value>this.range){
+                this.value = this.range
+            } else if(this.value<0) {
+                this.value = 0;
+            }
+            this.left = this.value * this.scale;
+        } else {
+            this.start_left = mouseX;
+            this.start_top = mouseY;
+            this.start_value = this.value;
+        }
     }
 
     dragging_start(){
-        console.log("dragging was enabled");
         this.dragging = true
     }
 
