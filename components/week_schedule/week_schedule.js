@@ -1,8 +1,3 @@
-/**
- * Created by Isaac on 8/9/2015.
- */
-/// <reference path="../../typings/angular2/angular2.d.ts" />
-/// <reference path="../../typings/angular2/router.d.ts" />
 if (typeof __decorate !== "function") __decorate = function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -14,33 +9,35 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
 if (typeof __metadata !== "function") __metadata = function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+/// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
-var router_1 = require('angular2/router');
-var MainMenu = (function () {
-    function MainMenu() {
-        this.title = "PITherm";
-        this.links = [
-            {
-                component: "/login",
-                text: "Login"
+var state_change_1 = require('components/state-change/state_change');
+var repeating_selector_1 = require('components/repeating_selector/repeating_selector');
+var week_schedule = (function () {
+    function week_schedule() {
+        this.state_changes = [];
+        this.state_changes = [{
+                week_time: 100,
+                state: { AC_target: 100, heater_target: 30, fan: false }
             },
             {
-                component: "/schedule",
-                text: "Schedule"
+                week_time: 100,
+                state: { AC_target: 100, heater_target: 30, fan: true }
             }
         ];
     }
-    MainMenu = __decorate([
+    week_schedule = __decorate([
         angular2_1.Component({
-            selector: 'main-menu'
+            selector: 'week-schedule',
+            lifecycle: [angular2_1.LifecycleEvent.onChange]
         }),
         angular2_1.View({
-            templateUrl: 'components/mainMenu/mainMenu.html',
-            directives: [router_1.RouterLink, angular2_1.NgFor]
+            templateUrl: "components/week_schedule/week_schedule.html",
+            directives: [state_change_1.StateChangeCont, angular2_1.NgFor, repeating_selector_1.RepeatingSelector]
         }), 
         __metadata('design:paramtypes', [])
-    ], MainMenu);
-    return MainMenu;
+    ], week_schedule);
+    return week_schedule;
 })();
-exports.MainMenu = MainMenu;
-//# sourceMappingURL=mainMenu.js.map
+exports.week_schedule = week_schedule;
+//# sourceMappingURL=week_schedule.js.map

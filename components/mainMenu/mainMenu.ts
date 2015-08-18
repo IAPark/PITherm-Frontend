@@ -26,6 +26,10 @@ export class MainMenu {
             {
                 component: "/login",
                 text: "Login"
+            },
+            {
+                component: "/schedule",
+                text: "Schedule"
             }
         ];
     }

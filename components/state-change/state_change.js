@@ -1,8 +1,3 @@
-/**
- * Created by Isaac on 8/9/2015.
- */
-/// <reference path="../../typings/angular2/angular2.d.ts" />
-/// <reference path="../../typings/angular2/router.d.ts" />
 if (typeof __decorate !== "function") __decorate = function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -14,33 +9,31 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
 if (typeof __metadata !== "function") __metadata = function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+/**
+ * Created by Isaac on 8/9/2015.
+ */
+/// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
-var router_1 = require('angular2/router');
-var MainMenu = (function () {
-    function MainMenu() {
-        this.title = "PITherm";
-        this.links = [
-            {
-                component: "/login",
-                text: "Login"
-            },
-            {
-                component: "/schedule",
-                text: "Schedule"
-            }
-        ];
+var StateChangeCont = (function () {
+    function StateChangeCont() {
+        this.change = new angular2_1.EventEmitter();
     }
-    MainMenu = __decorate([
+    StateChangeCont.prototype.update = function () {
+        this.change.next(this.state);
+    };
+    StateChangeCont = __decorate([
         angular2_1.Component({
-            selector: 'main-menu'
+            selector: 'state-change',
+            properties: ['state', 'index'],
+            events: ["change"],
         }),
         angular2_1.View({
-            templateUrl: 'components/mainMenu/mainMenu.html',
-            directives: [router_1.RouterLink, angular2_1.NgFor]
+            templateUrl: "components/state-change/state-change.html",
+            directives: [angular2_1.formDirectives]
         }), 
         __metadata('design:paramtypes', [])
-    ], MainMenu);
-    return MainMenu;
+    ], StateChangeCont);
+    return StateChangeCont;
 })();
-exports.MainMenu = MainMenu;
-//# sourceMappingURL=mainMenu.js.map
+exports.StateChangeCont = StateChangeCont;
+//# sourceMappingURL=state_change.js.map
