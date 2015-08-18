@@ -13,29 +13,32 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
 var angular2_1 = require('angular2/angular2');
 var state_change_1 = require('components/state-change/state_change');
 var repeating_selector_1 = require('components/repeating_selector/repeating_selector');
+var thermostat_backend_1 = require('services/thermostat_backend');
 var week_schedule = (function () {
-    function week_schedule() {
+    function week_schedule(thermostatBackend) {
         this.state_changes = [];
-        this.state_changes = [{
-                week_time: 100,
-                state: { AC_target: 100, heater_target: 30, fan: false }
-            },
-            {
-                week_time: 100,
-                state: { AC_target: 100, heater_target: 30, fan: true }
-            }
-        ];
+        this.thermostatBackend = thermostatBackend;
+        this.state_changes = thermostatBackend.repeating_schedule;
     }
+    week_schedule.prototype.update = function () {
+        this.thermostatBackend.updateRepeatingSchedule();
+    };
+    week_schedule.prototype.remove = function (schedule) {
+        this.thermostatBackend.removeRepeatingSchedule(schedule);
+    };
+    week_schedule.prototype.add = function () {
+        this.thermostatBackend.addRepeatingSchedule();
+    };
     week_schedule = __decorate([
         angular2_1.Component({
             selector: 'week-schedule',
-            lifecycle: [angular2_1.LifecycleEvent.onChange]
+            lifecycle: [angular2_1.LifecycleEvent.onChange],
         }),
         angular2_1.View({
             templateUrl: "components/week_schedule/week_schedule.html",
             directives: [state_change_1.StateChangeCont, angular2_1.NgFor, repeating_selector_1.RepeatingSelector]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend])
     ], week_schedule);
     return week_schedule;
 })();

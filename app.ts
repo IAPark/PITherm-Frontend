@@ -39,5 +39,4 @@ import {ThermostatBackend} from "services/thermostat_backend";
 // main component
 class App {}
 
-bootstrap(App,[routerInjectables, bind(LocationStrategy).toClass(HashLocationStrategy),
-    bind(ThermostatBackend).toValue(new ThermostatBackend(""))]);
+bootstrap(App,[routerInjectables, bind(LocationStrategy).toClass(HashLocationStrategy), ThermostatBackend]);

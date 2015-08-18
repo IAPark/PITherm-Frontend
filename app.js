@@ -38,6 +38,5 @@ var App = (function () {
     ], App);
     return App;
 })();
-angular2_1.bootstrap(App, [router_1.routerInjectables, angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy),
-    angular2_1.bind(thermostat_backend_1.ThermostatBackend).toValue(new thermostat_backend_1.ThermostatBackend(""))]);
+angular2_1.bootstrap(App, [router_1.routerInjectables, angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy), thermostat_backend_1.ThermostatBackend]);
 //# sourceMappingURL=app.js.map

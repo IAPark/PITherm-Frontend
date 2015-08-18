@@ -1,6 +1,4 @@
-/// <reference path="../typings/angular2/angular2.d.ts" />
 /// <reference path="../typings/jquery/jquery.d.ts" />
-import {Injectable} from 'angular2/angular2'
 
 export interface State{
     AC_target: number;
@@ -18,13 +16,18 @@ export interface RepeatingState extends StateChange{
 }
 
 
-@Injectable
+
 export class ThermostatBackend {
     url: string;
-    test: Array<RepeatingState>;
-    constructor (url: string) {
-        this.url = url;
-        this.test = [
+    repeating_schedule: Array<RepeatingState>;
+
+    // very insecure (we're just using it on our local network probably though so it shouldn't matter)
+    username: string;
+    password: string;
+
+    constructor () {
+        this.url = "";
+        this.repeating_schedule = [
             {
                 week_time: 100,
                 _id: "0",
@@ -38,15 +41,21 @@ export class ThermostatBackend {
         ]
     }
 
-    getRepeatingSchedule(): Array<RepeatingState> {
-        return this.test
+    login(username: string, password: string){
+
     }
-    updateRepeatingSchedule(schedule: RepeatingState) {
-        this.test[parseInt(schedule._id)] = schedule
+
+    updateRepeatingSchedule() {
+
     }
     removeRepeatingSchedule(schedule: RepeatingState) {
+        this.repeating_schedule.splice(parseInt(schedule._id), 1)
     }
-    addRepeatingSchedule(schedule: RepeatingState){
-
+    addRepeatingSchedule(){
+        this.repeating_schedule.push({
+            week_time: 0,
+            _id: this.repeating_schedule.length.toString(),
+            state: {AC_target: 0, heater_target: 0, fan: false}
+        });
     }
 }
