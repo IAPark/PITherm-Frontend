@@ -75,8 +75,4 @@ export class RepeatingSelector{
         var minute = Math.floor(((local_time%(24 * 60*60))/(60))%60);
         this.time = ('0' + hour).slice(-2) + ':' + ('0' + minute).slice(-2);
     }
-
-    test(t){
-        console.log(t)
-    }
 }

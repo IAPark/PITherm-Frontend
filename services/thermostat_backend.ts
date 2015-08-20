@@ -24,6 +24,8 @@ export interface RepeatingState extends StateChange{
 export class ThermostatBackend {
     url: string;
     repeating_schedule: Array<RepeatingState>;
+    old_repeating_schedule: Array<RepeatingState>;
+
     isLoggedIn: boolean = false;
 
     users: Users;
@@ -32,11 +34,17 @@ export class ThermostatBackend {
         this.url = "http://pi.isaacpark.me:5000";
         this.users = users;
         this.repeating_schedule = [];
+        var repeating = () => {
+            setTimeout(() => {
+                if (this.users.isLoggedIn) {
+                    this.updateRepeatingSchedule()
+                }
+                repeating();
+            }, 1000);
+        };
     }
 
     updateRepeatingSchedule() {
-        console.log(this.users.username + ":" + this.users.password);
-        var backend = this;
         $.ajax({url:this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -45,12 +53,27 @@ export class ThermostatBackend {
             dataType: 'json',
             success: (json) => {
                 console.log(json);
-                backend.repeating_schedule = json.data;
+                this.repeating_schedule = json.data;
             }});
 
     }
+    saveRepeatingSchedule(schedule: RepeatingState) {
+        console.log("saveRepeatingSchedule");
+        $.ajax({url:this.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(schedule),
+            success: (json) => {
+
+                //this line when here causes it to crash and throw an exception don't know why
+                //this.updateRepeatingSchedule()
+            }});
+    }
+
     removeRepeatingSchedule(schedule: RepeatingState) {
-        var backend = this;
         $.ajax({url:this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -63,10 +86,22 @@ export class ThermostatBackend {
             }});
     }
     addRepeatingSchedule(){
-        this.repeating_schedule.push({
-            week_time: 0,
-            _id: this.repeating_schedule.length.toString(),
-            state: {AC_target: 0, heater_target: 0, fan: false}
-        });
+        $.ajax({url:this.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({week_time: 0, state: {AC_target: 0, heater_target: 0, fan: false}
+            }),
+            success: (json) => {
+                this.repeating_schedule.push({
+                    week_time: 0,
+                    _id: json.data.$oid,
+                    state: {AC_target: 0, heater_target: 0, fan: false}
+                });
+
+            }});
+
     }
 }

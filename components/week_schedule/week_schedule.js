@@ -24,8 +24,9 @@ var week_schedule = (function () {
         }
         this.backend = thermostatBackend;
     }
-    week_schedule.prototype.update = function () {
-        this.backend.updateRepeatingSchedule();
+    week_schedule.prototype.update = function (change) {
+        console.log('update');
+        this.backend.saveRepeatingSchedule(change);
     };
     week_schedule.prototype.remove = function (schedule) {
         this.backend.removeRepeatingSchedule(schedule);

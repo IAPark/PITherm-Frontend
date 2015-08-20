@@ -47,9 +47,6 @@ var RepeatingSelector = (function () {
         var minute = Math.floor(((local_time % (24 * 60 * 60)) / (60)) % 60);
         this.time = ('0' + hour).slice(-2) + ':' + ('0' + minute).slice(-2);
     };
-    RepeatingSelector.prototype.test = function (t) {
-        console.log(t);
-    };
     RepeatingSelector = __decorate([
         angular2_1.Component({
             selector: 'repeating-selector',

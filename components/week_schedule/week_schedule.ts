@@ -31,8 +31,9 @@ export class week_schedule{
         this.backend = thermostatBackend;
     }
 
-    update(){
-        this.backend.updateRepeatingSchedule();
+    update(change: RepeatingStateChange){
+        console.log('update');
+        this.backend.saveRepeatingSchedule(change);
     }
 
     remove(schedule){

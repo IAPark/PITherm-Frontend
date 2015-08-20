@@ -15,14 +15,22 @@ var users_1 = require("./users");
 var angular2_1 = require('angular2/angular2');
 var ThermostatBackend = (function () {
     function ThermostatBackend(users) {
+        var _this = this;
         this.isLoggedIn = false;
         this.url = "http://pi.isaacpark.me:5000";
         this.users = users;
         this.repeating_schedule = [];
+        var repeating = function () {
+            setTimeout(function () {
+                if (_this.users.isLoggedIn) {
+                    _this.updateRepeatingSchedule();
+                }
+                repeating();
+            }, 1000);
+        };
     }
     ThermostatBackend.prototype.updateRepeatingSchedule = function () {
-        console.log(this.users.username + ":" + this.users.password);
-        var backend = this;
+        var _this = this;
         $.ajax({ url: this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -31,12 +39,25 @@ var ThermostatBackend = (function () {
             dataType: 'json',
             success: function (json) {
                 console.log(json);
-                backend.repeating_schedule = json.data;
+                _this.repeating_schedule = json.data;
+            } });
+    };
+    ThermostatBackend.prototype.saveRepeatingSchedule = function (schedule) {
+        console.log("saveRepeatingSchedule");
+        $.ajax({ url: this.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(schedule),
+            success: function (json) {
+                //this line when here causes it to crash and throw an exception don't know why
+                //this.updateRepeatingSchedule()
             } });
     };
     ThermostatBackend.prototype.removeRepeatingSchedule = function (schedule) {
         var _this = this;
-        var backend = this;
         $.ajax({ url: this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -49,11 +70,22 @@ var ThermostatBackend = (function () {
             } });
     };
     ThermostatBackend.prototype.addRepeatingSchedule = function () {
-        this.repeating_schedule.push({
-            week_time: 0,
-            _id: this.repeating_schedule.length.toString(),
-            state: { AC_target: 0, heater_target: 0, fan: false }
-        });
+        var _this = this;
+        $.ajax({ url: this.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify({ week_time: 0, state: { AC_target: 0, heater_target: 0, fan: false }
+            }),
+            success: function (json) {
+                _this.repeating_schedule.push({
+                    week_time: 0,
+                    _id: json.data.$oid,
+                    state: { AC_target: 0, heater_target: 0, fan: false }
+                });
+            } });
     };
     ThermostatBackend = __decorate([
         angular2_1.Inject(users_1.Users), 
