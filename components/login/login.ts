@@ -15,21 +15,23 @@ import {ThermostatBackend} from '../../services/thermostat_backend'
 @View({
     template: `
     <div class="row">
-        <div class="col s4 offset-s4">
-            <div class="row input-field">
-                <input id="username" type="text" (keyup)="username=$event.target.value">
-                <label for="username" {{username?("active"):("")}}>Username</label>
+        <form id="login">
+            <div class="col s4 offset-s4">
+                <div class="row input-field">
+                    <input id="username" type="text" [(ng-model)]="username">
+                    <label for="username" {{username?("active"):("")}}>Username</label>
+                </div>
+                <div class="row input-field">
+                    <input id="password" type="password" [(ng-model)]="password">
+                    <label for="password" {{password?("active"):("")}}>password</label>
+                </div>
+                <div class="row input-field">
+                    <button class="btn waves-effect waves-light" (click)="login()">Submit
+                        <i class="material-icons">send</i>
+                    </button>
+                </div>
             </div>
-            <div class="row input-field">
-                <input id="password" type="password" (keyup)="password=$event.target.value">
-                <label for="password" {{password?("active"):("")}}>password</label>
-            </div>
-            <div class="row input-field">
-                <button class="btn waves-effect waves-light" type="submit" (click)="login()">Submit
-                    <i class="material-icons">send</i>
-                </button>
-            </div>
-        </div>
+        </form>
     </div>`,
     directives: [FORM_DIRECTIVES]
 })
@@ -49,6 +51,7 @@ export class LoginComp{
         console.log(this.username + ':' +this.password);
         this.users.login(this.username, this.password);
         this.backend.updateRepeatingSchedule();
+        $('#login').submit(function(event){event.preventDefault();});
         this.router.navigate("/");
     }
 }

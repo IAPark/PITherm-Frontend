@@ -24,7 +24,7 @@ export interface RepeatingState extends StateChange{
 export class ThermostatBackend {
     url: string;
     repeating_schedule: Array<RepeatingState>;
-    old_repeating_schedule: Array<RepeatingState>;
+    loading = false;
 
     isLoggedIn: boolean = false;
 
@@ -42,9 +42,11 @@ export class ThermostatBackend {
                 repeating();
             }, 1000);
         };
+        //repeating();
     }
 
     updateRepeatingSchedule() {
+        this.loading = true;
         $.ajax({url:this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -52,12 +54,13 @@ export class ThermostatBackend {
             type: 'get',
             dataType: 'json',
             success: (json) => {
-                    //this.repeating_schedule = json.data;
+                this.repeating_schedule = json.data;
+                this.loading = false;
             }});
 
     }
     saveRepeatingSchedule(schedule: RepeatingState) {
-        console.log("saveRepeatingSchedule");
+        this.loading = true;
         $.ajax({url:this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -66,13 +69,15 @@ export class ThermostatBackend {
             dataType: 'json',
             data: JSON.stringify(schedule),
             success: (json) => {
-
+                schedule['_id'] = json.data.$oid;
                 //this line when here causes it to crash and throw an exception don't know why
-                //this.updateRepeatingSchedule()
+                this.loading = false;
             }});
     }
 
     removeRepeatingSchedule(schedule: RepeatingState) {
+        this.loading = true;
+        this.repeating_schedule.splice(this.repeating_schedule.indexOf(schedule), 1);
         $.ajax({url:this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -81,10 +86,17 @@ export class ThermostatBackend {
             dataType: 'json',
             data: JSON.stringify(schedule),
             success: (json) => {
-                this.updateRepeatingSchedule()
+                console.log("removed " + json.data.$oid);
+                this.loading = false;
             }});
     }
     addRepeatingSchedule(){
+        this.loading = true;
+        var state_change = {
+            week_time: 0,
+            state: {AC_target: 0, heater_target: 0, fan: false}
+        };
+        this.repeating_schedule.push(state_change);
         $.ajax({url:this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -94,12 +106,8 @@ export class ThermostatBackend {
             data: JSON.stringify({week_time: 0, state: {AC_target: 0, heater_target: 0, fan: false}
             }),
             success: (json) => {
-                this.repeating_schedule.push({
-                    week_time: 0,
-                    _id: json.data.$oid,
-                    state: {AC_target: 0, heater_target: 0, fan: false}
-                });
-
+                state_change['_id'] = json.data.$oid;
+                this.loading = false;
             }});
 
     }
