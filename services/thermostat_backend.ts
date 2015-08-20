@@ -52,8 +52,7 @@ export class ThermostatBackend {
             type: 'get',
             dataType: 'json',
             success: (json) => {
-                console.log(json);
-                this.repeating_schedule = json.data;
+                    //this.repeating_schedule = json.data;
             }});
 
     }

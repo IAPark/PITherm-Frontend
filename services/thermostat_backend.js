@@ -30,7 +30,6 @@ var ThermostatBackend = (function () {
         };
     }
     ThermostatBackend.prototype.updateRepeatingSchedule = function () {
-        var _this = this;
         $.ajax({ url: this.url + "/schedule/repeating/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
@@ -38,8 +37,7 @@ var ThermostatBackend = (function () {
             type: 'get',
             dataType: 'json',
             success: function (json) {
-                console.log(json);
-                _this.repeating_schedule = json.data;
+                //this.repeating_schedule = json.data;
             } });
     };
     ThermostatBackend.prototype.saveRepeatingSchedule = function (schedule) {
