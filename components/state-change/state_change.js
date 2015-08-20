@@ -29,7 +29,7 @@ var StateChangeCont = (function () {
         }),
         angular2_1.View({
             templateUrl: "components/state-change/state-change.html",
-            directives: [angular2_1.formDirectives]
+            directives: [angular2_1.FORM_DIRECTIVES]
         }), 
         __metadata('design:paramtypes', [])
     ], StateChangeCont);

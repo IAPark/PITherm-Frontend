@@ -59,7 +59,7 @@ var RepeatingSelector = (function () {
         }),
         angular2_1.View({
             template: "\n    <div class=\"row\">\n        <div class=\"col s8\">\n            <label>Day Of The Week</label>\n            <select class=\"browser-default\" [value]=\"day\" (change)=\"change_day($event.target.value)\">\n                <option value=\"6\">Sunday</option>\n                <option value=\"0\">Monday</option>\n                <option value=\"1\">Tuesday</option>\n                <option value=\"2\">Thursday</option>\n                <option value=\"3\">Wednesday</option>\n                <option value=\"4\">Friday</option>\n                <option value=\"5\">Saturday</option>\n            </select>\n        </div>\n        <div class=\"input-field col s4\">\n            <input id=\"time\" [(ng-model)]=\"time\" type=\"time\"(change)=\"update()\" class=\"validate\">\n            <label for=\"time\" class=\"active\">Time</label>\n        </div>\n    </div>\n    ",
-            directives: [angular2_1.formDirectives]
+            directives: [angular2_1.FORM_DIRECTIVES]
         }), 
         __metadata('design:paramtypes', [])
     ], RepeatingSelector);

@@ -1,5 +1,5 @@
 /// <reference path="../../typings/angular2/angular2.d.ts" />
-import {Component, View, EventEmitter, formDirectives, LifecycleEvent} from 'angular2/angular2'
+import {Component, View, EventEmitter, FORM_DIRECTIVES, LifecycleEvent} from 'angular2/angular2'
 
 @Component({
     selector: 'repeating-selector',
@@ -28,7 +28,7 @@ import {Component, View, EventEmitter, formDirectives, LifecycleEvent} from 'ang
         </div>
     </div>
     `,
-    directives: [formDirectives]
+    directives: [FORM_DIRECTIVES]
 })
 export class RepeatingSelector{
     week_time: number;
@@ -47,7 +47,7 @@ export class RepeatingSelector{
     }
 
     change_day(new_value: number){
-        this.day = new_value
+        this.day = new_value;
         this.update()
     }
 

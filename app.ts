@@ -21,7 +21,7 @@ import {LoginComp} from "components/login/login";
 import {MainMenu} from "components/mainMenu/mainMenu";
 import {week_schedule} from "components/week_schedule/week_schedule";
 import {ThermostatBackend} from "services/thermostat_backend";
-
+import {Users} from "services/users";
 
 
 @Component({
@@ -39,4 +39,5 @@ import {ThermostatBackend} from "services/thermostat_backend";
 // main component
 class App {}
 
-bootstrap(App,[routerInjectables, bind(LocationStrategy).toClass(HashLocationStrategy), ThermostatBackend]);
+    bootstrap(App,[routerInjectables, bind(LocationStrategy).toClass(HashLocationStrategy), Users,
+   ThermostatBackend]);

@@ -1,14 +1,16 @@
-
-
-<div *ng-for="#state_change of state_changes; #i = index" class="row">
-    <div class="col s12 m5">
-        <repeating-selector [week_time]="state_change.week_time" (change)="state_change.week_time=$event"></repeating-selector>
-    </div>
-    <div class="col s10 m5">
-        <state-change [state]="state_change.state" [index]="i" (change)="update(state_change)"></state-change>
-    </div>
-    <div class="col s1 input-field">
-        <a class="btn-floating waves-effect waves-light red" (^click)="remove(state_change)"><i class="material-icons">remove</i></a>
+<div *ng-for="#state_change of backend.repeating_schedule; #i = index">
+    <div class="row">
+        <div class="col s12 m5">
+            <repeating-selector [week_time]="state_change.week_time"
+                                (change)="state_change.week_time=$event"></repeating-selector>
+        </div>
+        <div class="col s10 m5">
+            <state-change [state]="state_change.state" [index]="i" (change)="update(state_change)"></state-change>
+        </div>
+        <div class="col s1 input-field">
+            <a class="btn-floating waves-effect waves-light red" (^click)="remove(state_change)"><i
+                    class="material-icons">remove</i></a>
+        </div>
     </div>
 </div>
 <a class="btn-floating waves-effect waves-light red" (^click)="add()"><i class="material-icons">add</i></a>

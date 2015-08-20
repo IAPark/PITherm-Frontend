@@ -1,3 +1,5 @@
+/// <reference path="../../typings/angular2/angular2.d.ts" />
+/// <reference path="../../typings/angular2/router.d.ts" />
 if (typeof __decorate !== "function") __decorate = function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -9,25 +11,27 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
 if (typeof __metadata !== "function") __metadata = function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-/// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
+var router_1 = require('angular2/router');
 var state_change_1 = require('components/state-change/state_change');
 var repeating_selector_1 = require('components/repeating_selector/repeating_selector');
 var thermostat_backend_1 = require('services/thermostat_backend');
+var users_1 = require('services/users');
 var week_schedule = (function () {
-    function week_schedule(thermostatBackend) {
-        this.state_changes = [];
-        this.thermostatBackend = thermostatBackend;
-        this.state_changes = thermostatBackend.repeating_schedule;
+    function week_schedule(thermostatBackend, users, router) {
+        if (!users.isLoggedIn) {
+            router.navigate('/');
+        }
+        this.backend = thermostatBackend;
     }
     week_schedule.prototype.update = function () {
-        this.thermostatBackend.updateRepeatingSchedule();
+        this.backend.updateRepeatingSchedule();
     };
     week_schedule.prototype.remove = function (schedule) {
-        this.thermostatBackend.removeRepeatingSchedule(schedule);
+        this.backend.removeRepeatingSchedule(schedule);
     };
     week_schedule.prototype.add = function () {
-        this.thermostatBackend.addRepeatingSchedule();
+        this.backend.addRepeatingSchedule();
     };
     week_schedule = __decorate([
         angular2_1.Component({
@@ -38,7 +42,7 @@ var week_schedule = (function () {
             templateUrl: "components/week_schedule/week_schedule.html",
             directives: [state_change_1.StateChangeCont, angular2_1.NgFor, repeating_selector_1.RepeatingSelector]
         }), 
-        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend])
+        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users, router_1.Router])
     ], week_schedule);
     return week_schedule;
 })();

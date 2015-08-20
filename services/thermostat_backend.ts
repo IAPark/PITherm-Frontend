@@ -1,4 +1,8 @@
 /// <reference path="../typings/jquery/jquery.d.ts" />
+/// <reference path="../typings/angular2/angular2.d.ts" />
+
+import {Users} from "./users"
+import {Inject} from 'angular2/angular2';
 
 export interface State{
     AC_target: number;
@@ -16,40 +20,47 @@ export interface RepeatingState extends StateChange{
 }
 
 
-
+@Inject(Users)
 export class ThermostatBackend {
     url: string;
     repeating_schedule: Array<RepeatingState>;
+    isLoggedIn: boolean = false;
 
-    // very insecure (we're just using it on our local network probably though so it shouldn't matter)
-    username: string;
-    password: string;
+    users: Users;
 
-    constructor () {
-        this.url = "";
-        this.repeating_schedule = [
-            {
-                week_time: 100,
-                _id: "0",
-                state: {AC_target: 100, heater_target: 30, fan: false}
-            },
-            {
-                week_time: 100,
-                _id: "1",
-                state: {AC_target: 100, heater_target: 30, fan: true}
-            }
-        ]
-    }
-
-    login(username: string, password: string){
-
+    constructor (users: Users) {
+        this.url = "http://pi.isaacpark.me:5000";
+        this.users = users;
+        this.repeating_schedule = [];
     }
 
     updateRepeatingSchedule() {
+        console.log(this.users.username + ":" + this.users.password);
+        var backend = this;
+        $.ajax({url:this.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'get',
+            dataType: 'json',
+            success: (json) => {
+                console.log(json);
+                backend.repeating_schedule = json.data;
+            }});
 
     }
     removeRepeatingSchedule(schedule: RepeatingState) {
-        this.repeating_schedule.splice(parseInt(schedule._id), 1)
+        var backend = this;
+        $.ajax({url:this.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'delete',
+            dataType: 'json',
+            data: JSON.stringify(schedule),
+            success: (json) => {
+                this.updateRepeatingSchedule()
+            }});
     }
     addRepeatingSchedule(){
         this.repeating_schedule.push({

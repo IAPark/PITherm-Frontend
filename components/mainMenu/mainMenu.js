@@ -16,17 +16,23 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
 };
 var angular2_1 = require('angular2/angular2');
 var router_1 = require('angular2/router');
+var thermostat_backend_1 = require('services/thermostat_backend');
+var users_1 = require('services/users');
 var MainMenu = (function () {
-    function MainMenu() {
+    function MainMenu(backend, users) {
+        this.backend = backend;
+        this.users = users;
         this.title = "PITherm";
         this.links = [
             {
                 component: "/login",
-                text: "Login"
+                text: "Login",
+                require_login: false
             },
             {
                 component: "/schedule",
-                text: "Schedule"
+                text: "Schedule",
+                require_login: true
             }
         ];
     }
@@ -36,9 +42,9 @@ var MainMenu = (function () {
         }),
         angular2_1.View({
             templateUrl: 'components/mainMenu/mainMenu.html',
-            directives: [router_1.RouterLink, angular2_1.NgFor]
+            directives: [router_1.RouterLink, angular2_1.NgFor, angular2_1.NgIf]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users])
     ], MainMenu);
     return MainMenu;
 })();

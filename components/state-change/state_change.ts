@@ -2,7 +2,7 @@
  * Created by Isaac on 8/9/2015.
  */
 /// <reference path="../../typings/angular2/angular2.d.ts" />
-import {Component, View, EventEmitter, formDirectives} from 'angular2/angular2'
+import {Component, View, EventEmitter, FORM_DIRECTIVES} from 'angular2/angular2'
 export interface State{
     AC_target: number;
     heater_target: number;
@@ -20,7 +20,7 @@ export interface StateChange{
 })
 @View({
     templateUrl: "components/state-change/state-change.html",
-    directives: [formDirectives]
+    directives: [FORM_DIRECTIVES]
 })
 export class StateChangeCont{
     state: any;

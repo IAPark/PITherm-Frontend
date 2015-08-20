@@ -18,6 +18,7 @@ var login_1 = require("components/login/login");
 var mainMenu_1 = require("components/mainMenu/mainMenu");
 var week_schedule_1 = require("components/week_schedule/week_schedule");
 var thermostat_backend_1 = require("services/thermostat_backend");
+var users_1 = require("services/users");
 var App = (function () {
     function App() {
     }
@@ -38,5 +39,6 @@ var App = (function () {
     ], App);
     return App;
 })();
-angular2_1.bootstrap(App, [router_1.routerInjectables, angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy), thermostat_backend_1.ThermostatBackend]);
+angular2_1.bootstrap(App, [router_1.routerInjectables, angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy), users_1.Users,
+    thermostat_backend_1.ThermostatBackend]);
 //# sourceMappingURL=app.js.map

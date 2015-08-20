@@ -1,3 +1,8 @@
+/**
+ * Created by Isaac on 8/9/2015.
+ */
+/// <reference path="../../typings/angular2/angular2.d.ts" />
+/// <reference path="../../typings/angular2/router.d.ts" />
 if (typeof __decorate !== "function") __decorate = function (decorators, target, key, desc) {
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
     switch (arguments.length) {
@@ -9,23 +14,31 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
 if (typeof __metadata !== "function") __metadata = function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-/**
- * Created by Isaac on 8/9/2015.
- */
-/// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
+var users_1 = require('services/users');
+var router_1 = require('angular2/router');
+var thermostat_backend_1 = require('../../services/thermostat_backend');
 var LoginComp = (function () {
-    function LoginComp() {
-        this.name = "Isaac Park";
+    function LoginComp(users, backend, router) {
+        this.backend = backend;
+        this.users = users;
+        this.router = router;
     }
+    LoginComp.prototype.login = function () {
+        console.log(this.username + ':' + this.password);
+        this.users.login(this.username, this.password);
+        this.backend.updateRepeatingSchedule();
+        this.router.navigate("/");
+    };
     LoginComp = __decorate([
         angular2_1.Component({
             selector: 'login'
         }),
         angular2_1.View({
-            template: "<h1>Login {{name}}</h1>"
+            template: "\n    <div class=\"row\">\n        <div class=\"col s4 offset-s4\">\n            <div class=\"row input-field\">\n                <input id=\"username\" type=\"text\" (keyup)=\"username=$event.target.value\">\n                <label for=\"username\" {{username?(\"active\"):(\"\")}}>Username</label>\n            </div>\n            <div class=\"row input-field\">\n                <input id=\"password\" type=\"password\" (keyup)=\"password=$event.target.value\">\n                <label for=\"password\" {{password?(\"active\"):(\"\")}}>password</label>\n            </div>\n            <div class=\"row input-field\">\n                <button class=\"btn waves-effect waves-light\" type=\"submit\" (click)=\"login()\">Submit\n                    <i class=\"material-icons\">send</i>\n                </button>\n            </div>\n        </div>\n    </div>",
+            directives: [angular2_1.FORM_DIRECTIVES]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [users_1.Users, thermostat_backend_1.ThermostatBackend, router_1.Router])
     ], LoginComp);
     return LoginComp;
 })();
