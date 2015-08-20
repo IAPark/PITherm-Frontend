@@ -16,9 +16,9 @@ var angular2_1 = require('angular2/angular2');
 var ThermostatBackend = (function () {
     function ThermostatBackend(users) {
         var _this = this;
+        this.url = "http://pi.isaacpark.me:5000";
         this.loading = false;
         this.isLoggedIn = false;
-        this.url = "http://pi.isaacpark.me:5000";
         this.users = users;
         this.repeating_schedule = [];
         var repeating = function () {

@@ -4,7 +4,7 @@
 /// <reference path="../../typings/angular2/angular2.d.ts" />
 /// <reference path="../../typings/angular2/router.d.ts" />
 
-import {Component, View, FORM_DIRECTIVES} from 'angular2/angular2';
+import {Component, View, FORM_DIRECTIVES, NgIf} from 'angular2/angular2';
 import {Users} from 'services/users'
 import {Router} from 'angular2/router';
 import {ThermostatBackend} from '../../services/thermostat_backend'
@@ -17,6 +17,9 @@ import {ThermostatBackend} from '../../services/thermostat_backend'
     <div class="row">
         <form id="login">
             <div class="col s4 offset-s4">
+                <div *ng-if="users.error" class="card-panel red white-text">
+                    {{users.error}}
+                </div>
                 <div class="row input-field">
                     <input id="username" type="text" [(ng-model)]="username">
                     <label for="username" {{username?("active"):("")}}>Username</label>
@@ -33,7 +36,7 @@ import {ThermostatBackend} from '../../services/thermostat_backend'
             </div>
         </form>
     </div>`,
-    directives: [FORM_DIRECTIVES]
+    directives: [FORM_DIRECTIVES, NgIf]
 })
 export class LoginComp{
     username: string;
@@ -50,8 +53,6 @@ export class LoginComp{
     login() {
         console.log(this.username + ':' +this.password);
         this.users.login(this.username, this.password);
-        this.backend.updateRepeatingSchedule();
         $('#login').submit(function(event){event.preventDefault();});
-        this.router.navigate("/");
     }
 }

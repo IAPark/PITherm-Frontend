@@ -27,17 +27,15 @@ var LoginComp = (function () {
     LoginComp.prototype.login = function () {
         console.log(this.username + ':' + this.password);
         this.users.login(this.username, this.password);
-        this.backend.updateRepeatingSchedule();
         $('#login').submit(function (event) { event.preventDefault(); });
-        this.router.navigate("/");
     };
     LoginComp = __decorate([
         angular2_1.Component({
             selector: 'login'
         }),
         angular2_1.View({
-            template: "\n    <div class=\"row\">\n        <form id=\"login\">\n            <div class=\"col s4 offset-s4\">\n                <div class=\"row input-field\">\n                    <input id=\"username\" type=\"text\" [(ng-model)]=\"username\">\n                    <label for=\"username\" {{username?(\"active\"):(\"\")}}>Username</label>\n                </div>\n                <div class=\"row input-field\">\n                    <input id=\"password\" type=\"password\" [(ng-model)]=\"password\">\n                    <label for=\"password\" {{password?(\"active\"):(\"\")}}>password</label>\n                </div>\n                <div class=\"row input-field\">\n                    <button class=\"btn waves-effect waves-light\" (click)=\"login()\">Submit\n                        <i class=\"material-icons\">send</i>\n                    </button>\n                </div>\n            </div>\n        </form>\n    </div>",
-            directives: [angular2_1.FORM_DIRECTIVES]
+            template: "\n    <div class=\"row\">\n        <form id=\"login\">\n            <div class=\"col s4 offset-s4\">\n                <div *ng-if=\"users.error\" class=\"card-panel red white-text\">\n                    {{users.error}}\n                </div>\n                <div class=\"row input-field\">\n                    <input id=\"username\" type=\"text\" [(ng-model)]=\"username\">\n                    <label for=\"username\" {{username?(\"active\"):(\"\")}}>Username</label>\n                </div>\n                <div class=\"row input-field\">\n                    <input id=\"password\" type=\"password\" [(ng-model)]=\"password\">\n                    <label for=\"password\" {{password?(\"active\"):(\"\")}}>password</label>\n                </div>\n                <div class=\"row input-field\">\n                    <button class=\"btn waves-effect waves-light\" (click)=\"login()\">Submit\n                        <i class=\"material-icons\">send</i>\n                    </button>\n                </div>\n            </div>\n        </form>\n    </div>",
+            directives: [angular2_1.FORM_DIRECTIVES, angular2_1.NgIf]
         }), 
         __metadata('design:paramtypes', [users_1.Users, thermostat_backend_1.ThermostatBackend, router_1.Router])
     ], LoginComp);

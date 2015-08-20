@@ -27,8 +27,10 @@ export class week_schedule{
     constructor(thermostatBackend:ThermostatBackend, users: Users, router: Router) {
         if(!users.isLoggedIn) {
             router.navigate('/')
+        } else {
+            this.backend = thermostatBackend;
+            this.backend.updateRepeatingSchedule();
         }
-        this.backend = thermostatBackend;
     }
 
     update(change: RepeatingStateChange){

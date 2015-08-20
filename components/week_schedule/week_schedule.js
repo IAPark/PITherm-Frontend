@@ -22,7 +22,10 @@ var week_schedule = (function () {
         if (!users.isLoggedIn) {
             router.navigate('/');
         }
-        this.backend = thermostatBackend;
+        else {
+            this.backend = thermostatBackend;
+            this.backend.updateRepeatingSchedule();
+        }
     }
     week_schedule.prototype.update = function (change) {
         console.log('update');

@@ -22,7 +22,7 @@ export interface RepeatingState extends StateChange{
 
 @Inject(Users)
 export class ThermostatBackend {
-    url: string;
+    url: string = "http://pi.isaacpark.me:5000";
     repeating_schedule: Array<RepeatingState>;
     loading = false;
 
@@ -31,7 +31,6 @@ export class ThermostatBackend {
     users: Users;
 
     constructor (users: Users) {
-        this.url = "http://pi.isaacpark.me:5000";
         this.users = users;
         this.repeating_schedule = [];
         var repeating = () => {
