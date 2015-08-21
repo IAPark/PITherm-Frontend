@@ -16,7 +16,7 @@ import {ThermostatBackend} from '../../services/thermostat_backend'
     template: `
     <div class="row">
         <form id="login">
-            <div class="col s4 offset-s4">
+            <div *ng-if="!backend.loading" class="col s4 offset-s4">
                 <div *ng-if="users.error" class="card-panel red white-text">
                     {{users.error}}
                 </div>
@@ -53,6 +53,6 @@ export class LoginComp{
     login() {
         console.log(this.username + ':' +this.password);
         this.users.login(this.username, this.password);
-        $('#login').submit(function(event){event.preventDefault();});
+        $('#login').submit((event) => event.preventDefault());
     }
 }

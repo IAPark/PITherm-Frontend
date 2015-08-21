@@ -17,25 +17,28 @@ var state_change_1 = require('components/state-change/state_change');
 var repeating_selector_1 = require('components/repeating_selector/repeating_selector');
 var thermostat_backend_1 = require('services/thermostat_backend');
 var users_1 = require('services/users');
+var repeating_schedule_1 = require('services/repeating_schedule');
 var week_schedule = (function () {
-    function week_schedule(thermostatBackend, users, router) {
+    function week_schedule(thermostatBackend, users, router, repeatingSchedule) {
+        this.dirty = [];
         if (!users.isLoggedIn) {
             router.navigate('/');
         }
         else {
             this.backend = thermostatBackend;
-            this.backend.updateRepeatingSchedule();
+            this.schedule = repeatingSchedule;
+            this.schedule.update();
         }
     }
     week_schedule.prototype.update = function (change) {
         console.log('update');
-        this.backend.saveRepeatingSchedule(change);
+        this.schedule.save(change);
     };
     week_schedule.prototype.remove = function (schedule) {
-        this.backend.removeRepeatingSchedule(schedule);
+        this.schedule.remove(schedule);
     };
     week_schedule.prototype.add = function () {
-        this.backend.addRepeatingSchedule();
+        this.schedule.add();
     };
     week_schedule = __decorate([
         angular2_1.Component({
@@ -44,9 +47,9 @@ var week_schedule = (function () {
         }),
         angular2_1.View({
             templateUrl: "components/week_schedule/week_schedule.html",
-            directives: [state_change_1.StateChangeCont, angular2_1.NgFor, repeating_selector_1.RepeatingSelector]
+            directives: [state_change_1.StateChangeCont, angular2_1.NgFor, angular2_1.NgIf, repeating_selector_1.RepeatingSelector]
         }), 
-        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users, router_1.Router])
+        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users, router_1.Router, repeating_schedule_1.RepeatingSchedule])
     ], week_schedule);
     return week_schedule;
 })();

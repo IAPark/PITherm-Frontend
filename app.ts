@@ -22,7 +22,7 @@ import {MainMenu} from "components/mainMenu/mainMenu";
 import {week_schedule} from "components/week_schedule/week_schedule";
 import {ThermostatBackend} from "services/thermostat_backend";
 import {Users} from "services/users";
-
+import {RepeatingSchedule} from "services/repeating_schedule";
 
 @Component({
     selector: 'app'
@@ -40,4 +40,4 @@ import {Users} from "services/users";
 class App {}
 
     bootstrap(App,[routerInjectables, bind(LocationStrategy).toClass(HashLocationStrategy), Users,
-   ThermostatBackend]);
+   ThermostatBackend, RepeatingSchedule]);

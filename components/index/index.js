@@ -9,12 +9,8 @@ if (typeof __decorate !== "function") __decorate = function (decorators, target,
 if (typeof __metadata !== "function") __metadata = function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-/**
- * Created by Isaac on 8/9/2015.
- */
 /// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
-var draggable_1 = require('../draggable');
 var IndexComp = (function () {
     function IndexComp() {
     }
@@ -23,8 +19,7 @@ var IndexComp = (function () {
             selector: 'index'
         }),
         angular2_1.View({
-            templateUrl: "components/index/dashboard.html",
-            directives: [draggable_1.Draggable]
+            templateUrl: "components/index/dashboard.html"
         }), 
         __metadata('design:paramtypes', [])
     ], IndexComp);

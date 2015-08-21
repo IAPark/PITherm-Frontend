@@ -1,13 +1,15 @@
 /// <reference path="../../typings/angular2/angular2.d.ts" />
 /// <reference path="../../typings/angular2/router.d.ts" />
 
-import {Component, View, NgFor, LifecycleEvent} from 'angular2/angular2';
+import {Component, View, NgFor, LifecycleEvent, NgIf} from 'angular2/angular2';
 import {Router} from 'angular2/router';
 
 import {StateChangeCont, StateChange, State} from 'components/state-change/state_change'
 import {RepeatingSelector} from 'components/repeating_selector/repeating_selector'
 import {ThermostatBackend} from 'services/thermostat_backend'
 import {Users} from 'services/users'
+import {RepeatingSchedule} from 'services/repeating_schedule'
+
 
 interface RepeatingStateChange extends StateChange{
     week_time:number;
@@ -20,30 +22,33 @@ interface RepeatingStateChange extends StateChange{
 })
 @View({
     templateUrl: "components/week_schedule/week_schedule.html",
-    directives: [StateChangeCont, NgFor, RepeatingSelector]
+    directives: [StateChangeCont, NgFor, NgIf, RepeatingSelector]
 })
 export class week_schedule{
     backend: ThermostatBackend;
-    constructor(thermostatBackend:ThermostatBackend, users: Users, router: Router) {
+    dirty: Array<boolean> = [];
+    schedule:RepeatingSchedule;
+    constructor(thermostatBackend:ThermostatBackend, users: Users, router: Router, repeatingSchedule: RepeatingSchedule) {
         if(!users.isLoggedIn) {
             router.navigate('/')
         } else {
             this.backend = thermostatBackend;
-            this.backend.updateRepeatingSchedule();
+            this.schedule = repeatingSchedule;
+            this.schedule.update();
         }
     }
 
     update(change: RepeatingStateChange){
         console.log('update');
-        this.backend.saveRepeatingSchedule(change);
+        this.schedule.save(change);
     }
 
     remove(schedule){
-        this.backend.removeRepeatingSchedule(schedule);
+        this.schedule.remove(schedule);
 
     }
 
     add() {
-        this.backend.addRepeatingSchedule();
+        this.schedule.add();
     }
 }
