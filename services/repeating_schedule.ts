@@ -94,7 +94,6 @@ export class RepeatingSchedule {
             }});
     }
     add(){
-        this.backend.loading = true;
         var state_change = {
             week_time: 0,
             state: {AC_target: 0, heater_target: 0, fan: false},
