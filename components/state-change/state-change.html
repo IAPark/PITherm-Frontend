@@ -8,7 +8,7 @@
         <label for="heater_target" class="active">Heater Target</label>
     </div>
     <div class="input-field col s2">
-        <input [id]="'fan' + index" type="checkbox" [(ng-model)]="state.fan">
+        <input [id]="'fan' + index" type="checkbox" [(ng-model)]="state.fan" (input)="update()">
         <label [attr.for]="'fan' + index">Fan</label>
     </div>
 </div>
