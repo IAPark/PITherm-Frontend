@@ -7,7 +7,7 @@
         <div class="col s10 m5">
             <state-change [state]="state_change.state" [index]="i" (change)="state_change.state=$event; state_change.dirty = true"></state-change>
         </div>
-        <div class="input-field">
+        <div class="col s2 input-field">
             <a class="btn-floating waves-effect waves-light red" (^click)="remove(state_change)"><i
                     class="material-icons">remove</i></a>
             <a *ng-if="state_change.dirty" (^click)="update(state_change)" class="btn-flat">
