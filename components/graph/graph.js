@@ -54,10 +54,11 @@ var Graph = (function () {
     Graph.prototype.draw = function () {
         var width = this.canvas.width;
         var height = this.canvas.height;
+        var border = 60;
         var xOffset = 0 - this.xMin;
         var yOffset = 0 - this.yMin;
-        var xScale = width / (xOffset + this.xMax);
-        var yScale = height / (yOffset + this.yMax);
+        var xScale = (width - border * 2) / (xOffset + this.xMax);
+        var yScale = (height - border * 2) / (yOffset + this.yMax);
         if (!isFinite(yScale)) {
             yScale = 1;
         }
@@ -69,9 +70,9 @@ var Graph = (function () {
         if (1 > this.xs.length || 1 > this.ys.length) {
             return;
         }
-        this.content.moveTo((this.xs[0] + xOffset) * xScale, (this.ys[0] + yOffset) * yScale);
+        this.content.moveTo((this.xs[0] + xOffset) * xScale + border, (this.ys[0] + yOffset) * yScale + border);
         for (var i = 1; i < this.xs.length && i < this.ys.length; i += 1) {
-            this.content.lineTo((this.xs[i] + xOffset) * xScale, (this.ys[i] + yOffset) * yScale);
+            this.content.lineTo((this.xs[i] + xOffset) * xScale + border, (this.ys[i] + yOffset) * yScale + border);
         }
         this.content.stroke();
     };
@@ -104,7 +105,7 @@ var Graph = (function () {
             }
         }),
         angular2_1.View({
-            template: "\n        <div id=\"wrapper\" style=\"height: inherit; width: inherit\">\n            <canvas id=\"graph\" height=\"100%\" width=\"100%\"></canvas>\n        </div>\n    "
+            template: "\n        <div id=\"wrapper\" style=\"height: inherit; width: inherit; border: 1px #000000;\">\n            <canvas id=\"graph\" height=\"100%\" width=\"100%\" style=\"border: 1px #000000;\"></canvas>\n        </div>\n    "
         }), 
         __metadata('design:paramtypes', [])
     ], Graph);

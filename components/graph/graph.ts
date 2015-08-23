@@ -13,8 +13,8 @@ import {Component, View, LifecycleEvent} from 'angular2/angular2';
 })
 @View({
     template: `
-        <div id="wrapper" style="height: inherit; width: inherit">
-            <canvas id="graph" height="100%" width="100%"></canvas>
+        <div id="wrapper" style="height: inherit; width: inherit; border: 1px #000000;">
+            <canvas id="graph" height="100%" width="100%" style="border: 1px #000000;"></canvas>
         </div>
     `
 })
@@ -79,12 +79,13 @@ export class Graph {
     draw() {
         let width = this.canvas.width;
         let height = this.canvas.height;
+        let border =  60;
 
         let xOffset = 0 - this.xMin;
         let yOffset = 0 - this.yMin;
 
-        let xScale = width/(xOffset + this.xMax);
-        let yScale = height/(yOffset + this.yMax);
+        let xScale = (width - border*2)/(xOffset + this.xMax);
+        let yScale = (height - border*2)/(yOffset + this.yMax);
 
         if (!isFinite(yScale)) {
             yScale = 1;
@@ -103,13 +104,13 @@ export class Graph {
 
 
         this.content.moveTo(
-            (this.xs[0] + xOffset)*xScale,
-            (this.ys[0] + yOffset)*yScale
+            (this.xs[0] + xOffset)*xScale + border,
+            (this.ys[0] + yOffset)*yScale + border
         );
         for (var i=1; i<this.xs.length && i<this.ys.length; i+=1) {
             this.content.lineTo(
-                (this.xs[i] + xOffset)*xScale,
-                (this.ys[i] + yOffset)*yScale
+                (this.xs[i] + xOffset)*xScale + border,
+                (this.ys[i] + yOffset)*yScale + border
             );
 
             /*console.log("drawing to " +
