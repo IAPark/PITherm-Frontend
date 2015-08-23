@@ -20,6 +20,7 @@ var thermostat_backend_1 = require('services/thermostat_backend');
 var users_1 = require('services/users');
 var MainMenu = (function () {
     function MainMenu(backend, users) {
+        $(".button-collapse").sideNav();
         this.backend = backend;
         this.users = users;
         this.title = "PITherm";

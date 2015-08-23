@@ -25,6 +25,7 @@ export class MainMenu{
     backend: ThermostatBackend;
     users: Users;
     constructor(backend: ThermostatBackend, users: Users) {
+        $(".button-collapse").sideNav();
         this.backend = backend;
         this.users = users;
         this.title = "PITherm";
