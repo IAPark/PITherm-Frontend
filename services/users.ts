@@ -17,7 +17,6 @@ export class Users{
     backend: ThermostatBackend;
 
     isLoggedIn: boolean = false;
-    url: string = "http://pi.isaacpark.me:5000";
 
     constructor(router: Router, backend: ThermostatBackend){
         this.router = router;
@@ -28,7 +27,7 @@ export class Users{
         this.password = password;
         this.backend.loading = true;
         $.ajax({
-            url: this.url + "/user/",
+            url: this.backend.url + "/user/",
             headers: {
                 "Authorization": "Basic " + btoa(this.username + ":" + this.password)
             },

@@ -20,6 +20,7 @@ var week_schedule_1 = require("components/week_schedule/week_schedule");
 var thermostat_backend_1 = require("services/thermostat_backend");
 var users_1 = require("services/users");
 var repeating_schedule_1 = require("services/repeating_schedule");
+var temps_1 = require("services/temps");
 var App = (function () {
     function App() {
     }
@@ -41,5 +42,5 @@ var App = (function () {
     return App;
 })();
 angular2_1.bootstrap(App, [router_1.routerInjectables, angular2_1.bind(router_1.LocationStrategy).toClass(router_1.HashLocationStrategy), users_1.Users,
-    thermostat_backend_1.ThermostatBackend, repeating_schedule_1.RepeatingSchedule]);
+    thermostat_backend_1.ThermostatBackend, repeating_schedule_1.RepeatingSchedule, temps_1.Temps]);
 //# sourceMappingURL=app.js.map

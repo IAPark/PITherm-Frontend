@@ -4,17 +4,12 @@
 import {Component, View, NgFor, LifecycleEvent, NgIf} from 'angular2/angular2';
 import {Router} from 'angular2/router';
 
-import {StateChangeCont, StateChange, State} from 'components/state-change/state_change'
+import {StateChangeCont, State} from 'components/state-change/state_change'
 import {RepeatingSelector} from 'components/repeating_selector/repeating_selector'
 import {ThermostatBackend} from 'services/thermostat_backend'
 import {Users} from 'services/users'
-import {RepeatingSchedule} from 'services/repeating_schedule'
+import {RepeatingSchedule, RepeatingState} from 'services/repeating_schedule'
 
-
-interface RepeatingStateChange extends StateChange{
-    week_time:number;
-    state: State;
-}
 
 @Component({
     selector: 'week-schedule',
@@ -38,7 +33,7 @@ export class week_schedule{
         }
     }
 
-    update(change: RepeatingStateChange){
+    update(change: RepeatingState){
         console.log('update');
         this.schedule.save(change);
     }

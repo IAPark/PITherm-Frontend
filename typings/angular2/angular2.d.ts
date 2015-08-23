@@ -5771,3 +5771,4 @@ var Key: InjectableReference;
 declare module "angular2/angular2" {
   export = ng;
 }
+

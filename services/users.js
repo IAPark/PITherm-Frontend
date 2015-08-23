@@ -18,7 +18,6 @@ var thermostat_backend_1 = require('./thermostat_backend');
 var Users = (function () {
     function Users(router, backend) {
         this.isLoggedIn = false;
-        this.url = "http://pi.isaacpark.me:5000";
         this.router = router;
         this.backend = backend;
     }
@@ -28,7 +27,7 @@ var Users = (function () {
         this.password = password;
         this.backend.loading = true;
         $.ajax({
-            url: this.url + "/user/",
+            url: this.backend.url + "/user/",
             headers: {
                 "Authorization": "Basic " + btoa(this.username + ":" + this.password)
             },

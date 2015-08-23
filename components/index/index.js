@@ -11,17 +11,24 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
 };
 /// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
+var graph_1 = require('../graph/graph');
+var temps_1 = require("services/temps");
 var IndexComp = (function () {
-    function IndexComp() {
+    function IndexComp(temps) {
+        this.ys = [1, 1];
+        this.xs = [1, 2];
+        this.temps = temps;
+        temps.getTemps();
     }
     IndexComp = __decorate([
         angular2_1.Component({
             selector: 'index'
         }),
         angular2_1.View({
-            templateUrl: "components/index/dashboard.html"
+            templateUrl: "components/index/dashboard.html",
+            directives: [graph_1.Graph]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [temps_1.Temps])
     ], IndexComp);
     return IndexComp;
 })();
