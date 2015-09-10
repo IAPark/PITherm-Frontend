@@ -18,6 +18,13 @@ var StateChangeRepeating = (function () {
     function StateChangeRepeating() {
         this.dirty = false;
     }
+    StateChangeRepeating.from_json = function (json) {
+        var result = new StateChangeRepeating();
+        result._week_time = json.week_time;
+        result._state = State.from_json(json.state);
+        result._id = json._id;
+        return result;
+    };
     Object.defineProperty(StateChangeRepeating.prototype, "state", {
         get: function () {
             return this._state;
@@ -98,6 +105,7 @@ var DaysTimeState = (function () {
             this.state_change_for_day[day] = new StateChangeRepeating();
             this.state_change_for_day[day]._state = this._state;
             this.state_change_for_day[day]._week_time = day * 24 * 60 * 60 + this._time;
+            this.state_change_for_day[day].days_time_state = this;
         }
         else {
             this.state_change_for_day[day] = null;
@@ -114,7 +122,7 @@ var DaysTimeState = (function () {
             }
             this.state_change_for_day.forEach(function (state_change, day) {
                 if (state_change) {
-                    state_change._week_time = day * 24 * 60 * 60 + _this._time;
+                    state_change._week_time = day * 24 * 60 * 60 + _this._time - DaysTimeState.offset;
                 }
             });
             this._time = time;
@@ -133,14 +141,6 @@ var DaysTimeState = (function () {
                 }
             });
             this._state = state;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(DaysTimeState.prototype, "local_week_time", {
-        // time in the local timezone
-        get: function () {
-            return (this.time + DaysTimeState.offset) % (24 * 7 * 60 * 60);
         },
         enumerable: true,
         configurable: true
@@ -166,6 +166,13 @@ var State = (function () {
     }
     State.prototype.toString = function () {
         return "{AC_target: " + this.AC_target + ",heater_target: " + this.heater_target + ",fan: " + this.fan + "}";
+    };
+    State.from_json = function (json) {
+        var result = new State();
+        result.AC_target = json.AC_target;
+        result.heater_target = json.heater_target;
+        result.fan = json.fan;
+        return result;
     };
     return State;
 })();
@@ -197,23 +204,24 @@ var RepeatingSchedule = (function () {
             dataType: 'json',
             success: function (json) {
                 _this.schedule = [];
-                for (var change in json.data) {
+                json.data.forEach(function (change) {
+                    change = StateChangeRepeating.from_json(change);
                     var days_time = new DaysTimeState();
                     var exists = false;
-                    for (var change_day_time in _this.schedule) {
+                    _this.schedule.forEach(function (change_day_time) {
                         if (change_day_time.add(change)) {
                             exists = true;
                         }
-                    }
+                    });
                     // if we don't have an object for this state, day, and time
                     if (!exists) {
                         var change_event = new DaysTimeState();
                         change_event.time = change.time;
-                        console.log(change);
+                        change_event.state = change.state;
                         change_event.add(change);
                         _this.schedule.push(change_event);
                     }
-                }
+                });
                 //this.repeating_schedule.forEach((change)=> change.dirty = false);
                 _this.backend.loading = false;
             }

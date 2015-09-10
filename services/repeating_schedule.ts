@@ -11,6 +11,14 @@ export class StateChangeRepeating {
     private static offset:number = new Date().getTimezoneOffset() * 60;
     days_time_state: DaysTimeState; // the days and time this should happen the primary way we represent this on the front end
 
+    static from_json(json): StateChangeRepeating{
+        let result = new StateChangeRepeating();
+
+        result._week_time = json.week_time;
+        result._state = State.from_json(json.state);
+        result._id = json._id;
+        return result;
+    }
 
     // we need to make sure that we stay in sync with our days_time counter part
     set state(state:State) {
@@ -87,6 +95,7 @@ export class DaysTimeState {
             this.state_change_for_day[day] = new StateChangeRepeating();
             this.state_change_for_day[day]._state = this._state;
             this.state_change_for_day[day]._week_time = day * 24*60*60 + this._time;
+            this.state_change_for_day[day].days_time_state = this;
         } else {
             this.state_change_for_day[day] = null;
         }
@@ -101,7 +110,7 @@ export class DaysTimeState {
         }
         this.state_change_for_day.forEach((state_change, day) => {
             if(state_change){
-                state_change._week_time = day * 24*60*60 + this._time;
+                state_change._week_time = day * 24*60*60 + this._time - DaysTimeState.offset;
             }
         });
         this._time = time;
@@ -116,12 +125,6 @@ export class DaysTimeState {
             }
         });
         this._state = state;
-    }
-
-
-    // time in the local timezone
-    get local_week_time() {
-        return (this.time + DaysTimeState.offset) % (24 * 7 * 60 * 60);
     }
 
     // adds the state given if it has an equal state and it is at the same time
@@ -142,6 +145,15 @@ export class State {
 
     toString(): string{
         return "{AC_target: " + this.AC_target + ",heater_target: " + this.heater_target + ",fan: " + this.fan + "}";
+    }
+
+    static from_json(json): State {
+        let result = new State();
+        result.AC_target = json.AC_target;
+        result.heater_target = json.heater_target;
+        result.fan = json.fan;
+
+        return result;
     }
 }
 
@@ -179,25 +191,28 @@ export class RepeatingSchedule {
             dataType: 'json',
             success: (json) => {
                 this.schedule = [];
-                for (let change in json.data) {
+                json.data.forEach( (change) => {
+                    change = StateChangeRepeating.from_json(change);
+
                     let days_time:DaysTimeState = new DaysTimeState();
 
                     let exists = false;
-                    for (let change_day_time in this.schedule) {
+                    this.schedule.forEach( (change_day_time) => {
                         if(change_day_time.add(change)){
                             exists = true;
                         }
-                    }
+                    });
 
                     // if we don't have an object for this state, day, and time
                     if(!exists) {
                         let change_event = new DaysTimeState();
                         change_event.time = change.time;
-                        console.log(change);
+                        change_event.state = change.state;
                         change_event.add(change);
                         this.schedule.push(change_event);
+
                     }
-                }
+                });
                 //this.repeating_schedule.forEach((change)=> change.dirty = false);
                 this.backend.loading = false;
             }
