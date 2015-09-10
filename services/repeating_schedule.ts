@@ -34,14 +34,17 @@ export class StateChangeRepeating {
         return this._week_time;
     }
 
+
+    // get local day
     get day():Day {
-        return this.local_week_time / (24 * 60 * 60);
+        return Math.floor(this.local_week_time / (24 * 60 * 60));
     }
 
     get local_week_time() {
         return (this.week_time + StateChangeRepeating.offset) % (24 * 7 * 60 * 60);
     }
 
+    // get local time in day
     get time():number {
         return this.local_week_time % (24 * 60 * 60);
     }
@@ -96,6 +99,7 @@ export class DaysTimeState {
             this.state_change_for_day[day]._state = this._state;
             this.state_change_for_day[day]._week_time = day * 24*60*60 + this._time;
             this.state_change_for_day[day].days_time_state = this;
+            this._days[day] = true;
         } else {
             this.state_change_for_day[day] = null;
         }
@@ -129,11 +133,14 @@ export class DaysTimeState {
 
     // adds the state given if it has an equal state and it is at the same time
     add(state_change: StateChangeRepeating): boolean{
-        if(state_change.time == this.time && state_change.state == this.state) {
-            this.set_on_day(state_change.time, true);
+        if(state_change.time == this.time && state_change.state.equals(this.state)) {
+            this.set_on_day(state_change.day, true);
+            console.log(state_change.day);
             this._state = state_change.state;
             return true;
         }
+        console.log(state_change.time + "!=" +this.time);
+        console.log(state_change.state + "!=" + this.state);
         return false;
     }
 }
@@ -145,6 +152,10 @@ export class State {
 
     toString(): string{
         return "{AC_target: " + this.AC_target + ",heater_target: " + this.heater_target + ",fan: " + this.fan + "}";
+    }
+
+    equals(other: State): boolean {
+        return this.AC_target == other.AC_target && this.heater_target == other.heater_target && this.fan == other.fan;
     }
 
     static from_json(json): State {

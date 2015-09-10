@@ -54,8 +54,9 @@ var StateChangeRepeating = (function () {
         configurable: true
     });
     Object.defineProperty(StateChangeRepeating.prototype, "day", {
+        // get local day
         get: function () {
-            return this.local_week_time / (24 * 60 * 60);
+            return Math.floor(this.local_week_time / (24 * 60 * 60));
         },
         enumerable: true,
         configurable: true
@@ -68,6 +69,7 @@ var StateChangeRepeating = (function () {
         configurable: true
     });
     Object.defineProperty(StateChangeRepeating.prototype, "time", {
+        // get local time in day
         get: function () {
             return this.local_week_time % (24 * 60 * 60);
         },
@@ -106,6 +108,7 @@ var DaysTimeState = (function () {
             this.state_change_for_day[day]._state = this._state;
             this.state_change_for_day[day]._week_time = day * 24 * 60 * 60 + this._time;
             this.state_change_for_day[day].days_time_state = this;
+            this._days[day] = true;
         }
         else {
             this.state_change_for_day[day] = null;
@@ -147,11 +150,14 @@ var DaysTimeState = (function () {
     });
     // adds the state given if it has an equal state and it is at the same time
     DaysTimeState.prototype.add = function (state_change) {
-        if (state_change.time == this.time && state_change.state == this.state) {
-            this.set_on_day(state_change.time, true);
+        if (state_change.time == this.time && state_change.state.equals(this.state)) {
+            this.set_on_day(state_change.day, true);
+            console.log(state_change.day);
             this._state = state_change.state;
             return true;
         }
+        console.log(state_change.time + "!=" + this.time);
+        console.log(state_change.state + "!=" + this.state);
         return false;
     };
     DaysTimeState.offset = new Date().getTimezoneOffset() * 60;
@@ -166,6 +172,9 @@ var State = (function () {
     }
     State.prototype.toString = function () {
         return "{AC_target: " + this.AC_target + ",heater_target: " + this.heater_target + ",fan: " + this.fan + "}";
+    };
+    State.prototype.equals = function (other) {
+        return this.AC_target == other.AC_target && this.heater_target == other.heater_target && this.fan == other.fan;
     };
     State.from_json = function (json) {
         var result = new State();

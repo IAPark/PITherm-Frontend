@@ -11,31 +11,31 @@ import {Component, View, EventEmitter, FORM_DIRECTIVES} from 'angular2/angular2'
     <div class="row">
         <div class="col s9" style="display: flex; flex-direction: row">
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'sunday' + index" type="checkbox" [(ng-model)]="days_time.onDay[6]" (^click)="update()">
+                <input [id]="'sunday' + index" type="checkbox" [checked]="days_time.on_day(6)" (^click)="update()">
                 <label [attr.for]="'sunday' + index">S</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'monday' + index" type="checkbox" [(ng-model)]="days_time.onDay[0]" (^click)="update()">
+                <input [id]="'monday' + index" type="checkbox" [checked]="days_time.on_day(0)" (^click)="update()">
                 <label [attr.for]="'monday' + index">M</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'tuesday' + index" type="checkbox" [(ng-model)]="days_time.onDay[1]" (^click)="update()">
+                <input [id]="'tuesday' + index" type="checkbox" [checked]="days_time.on_day(1)" (^click)="update()">
                 <label [attr.for]="'tuesday' + index">T</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'wednesday' + index" type="checkbox" [(ng-model)]="days_time.onDay[2]" (^click)="update()">
+                <input [id]="'wednesday' + index" type="checkbox" [checked]="days_time.on_day(2)" (^click)="update()">
                 <label [attr.for]="'wednesday' + index">W</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'thursday' + index" type="checkbox" [(ng-model)]="days_time.onDay[3]" (^click)="update()">
+                <input [id]="'thursday' + index" type="checkbox" [checked]="days_time.on_day(3)" (^click)="update()">
                 <label [attr.for]="'thursday' + index">T</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'friday' + index" type="checkbox" [(ng-model)]="days_time.onDay[4]" (^click)="update()">
+                <input [id]="'friday' + index" type="checkbox" [checked]="days_time.on_day(4)" (^click)="update()">
                 <label [attr.for]="'friday' + index">F</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
-                <input [id]="'saturday' + index" type="checkbox" [(ng-model)]="days_time.onDay[5]" (^click)="update()">
+                <input [id]="'saturday' + index" type="checkbox" [checked]="days_time.on_day(5)" (^click)="update()">
                 <label [attr.for]="'saturday' + index">S</label>
             </div>
         </div>
@@ -76,7 +76,7 @@ export class DaysTimeSelector{
     }
 
     onChange(changes) {
-        var local_time = this.days_time.time + this.timezone;
+        var local_time = this.days_time.time;
 
         var hour = Math.floor((local_time%(24 * 60*60))/(60*60));
         var minute = Math.floor(((local_time%(24 * 60*60))/(60))%60);
