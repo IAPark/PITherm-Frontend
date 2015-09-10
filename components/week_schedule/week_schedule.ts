@@ -4,11 +4,11 @@
 import {Component, View, NgFor, LifecycleEvent, NgIf} from 'angular2/angular2';
 import {Router} from 'angular2/router';
 
-import {StateChangeCont, State} from 'components/state-change/state_change'
-import {RepeatingSelector} from 'components/repeating_selector/repeating_selector'
+import {StateView, State} from 'components/state/state'
+import {DaysTimeSelector} from 'components/days_time_selector/days_time_selector'
 import {ThermostatBackend} from 'services/thermostat_backend'
 import {Users} from 'services/users'
-import {RepeatingSchedule, RepeatingState} from 'services/repeating_schedule'
+import {RepeatingSchedule, DaysTimeState} from 'services/repeating_schedule'
 
 
 @Component({
@@ -17,12 +17,15 @@ import {RepeatingSchedule, RepeatingState} from 'services/repeating_schedule'
 })
 @View({
     templateUrl: "components/week_schedule/week_schedule.html",
-    directives: [StateChangeCont, NgFor, NgIf, RepeatingSelector]
+    directives: [StateView, NgFor, NgIf, DaysTimeSelector]
 })
-export class week_schedule{
+export class WeekSchedule{
     backend: ThermostatBackend;
     dirty: Array<boolean> = [];
     schedule:RepeatingSchedule;
+
+    static timezone: number = new Date().getTimezoneOffset() * 60;
+
     constructor(thermostatBackend:ThermostatBackend, users: Users, router: Router, repeatingSchedule: RepeatingSchedule) {
         if(!users.isLoggedIn) {
             router.navigate('/')
@@ -33,14 +36,19 @@ export class week_schedule{
         }
     }
 
-    update(change: RepeatingState){
-        console.log('update');
-        this.schedule.save(change);
+    update(change: DaysTimeState){
+        change.dirty = false;
     }
 
-    remove(schedule){
-        this.schedule.remove(schedule);
-
+    remove(to_remove){
+        console.log(to_remove);
+        to_remove.days_time.onDay.forEach((onDay, day) => {
+            console.log(to_remove.repeating_state_for_day[day]);
+            if(to_remove.repeating_state_for_day[day]) {
+                this.schedule.remove(to_remove.repeating_state_for_day[day]);
+                to_remove.repeating_state_for_day[day] = null;
+            }
+        });
     }
 
     add() {

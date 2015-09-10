@@ -9,25 +9,24 @@ export interface State{
     fan: boolean;
 }
 
-export interface StateChange{
-    state: State
-}
-
 @Component({
-    selector: 'state-change',
-    properties: ['state', 'index'],
+    selector: 'state',
+    properties: ['state'],
     events: ["change"],
 })
 @View({
-    templateUrl: "components/state-change/state-change.html",
+    templateUrl: "components/state/state.html",
     directives: [FORM_DIRECTIVES]
 })
-export class StateChangeCont{
+export class StateView{
     state: any;
     change: EventEmitter;
     index: number;
+    static max_index: number = 0;
     constructor() {
-        this.change = new EventEmitter()
+        this.change = new EventEmitter();
+        this.index = StateView.max_index;
+        StateView.max_index+=1;
     }
 
     update(){

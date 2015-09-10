@@ -18,7 +18,7 @@ var IndexComp = (function () {
         this.ys = [1, 1];
         this.xs = [1, 2];
         this.temps = temps;
-        temps.getTemps();
+        //temps.getTemps();
     }
     IndexComp = __decorate([
         angular2_1.Component({

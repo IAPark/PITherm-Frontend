@@ -13,13 +13,13 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
 };
 var angular2_1 = require('angular2/angular2');
 var router_1 = require('angular2/router');
-var state_change_1 = require('components/state-change/state_change');
-var repeating_selector_1 = require('components/repeating_selector/repeating_selector');
+var state_1 = require('components/state/state');
+var days_time_selector_1 = require('components/days_time_selector/days_time_selector');
 var thermostat_backend_1 = require('services/thermostat_backend');
 var users_1 = require('services/users');
 var repeating_schedule_1 = require('services/repeating_schedule');
-var week_schedule = (function () {
-    function week_schedule(thermostatBackend, users, router, repeatingSchedule) {
+var WeekSchedule = (function () {
+    function WeekSchedule(thermostatBackend, users, router, repeatingSchedule) {
         this.dirty = [];
         if (!users.isLoggedIn) {
             router.navigate('/');
@@ -30,28 +30,36 @@ var week_schedule = (function () {
             this.schedule.update();
         }
     }
-    week_schedule.prototype.update = function (change) {
-        console.log('update');
-        this.schedule.save(change);
+    WeekSchedule.prototype.update = function (change) {
+        change.dirty = false;
     };
-    week_schedule.prototype.remove = function (schedule) {
-        this.schedule.remove(schedule);
+    WeekSchedule.prototype.remove = function (to_remove) {
+        var _this = this;
+        console.log(to_remove);
+        to_remove.days_time.onDay.forEach(function (onDay, day) {
+            console.log(to_remove.repeating_state_for_day[day]);
+            if (to_remove.repeating_state_for_day[day]) {
+                _this.schedule.remove(to_remove.repeating_state_for_day[day]);
+                to_remove.repeating_state_for_day[day] = null;
+            }
+        });
     };
-    week_schedule.prototype.add = function () {
+    WeekSchedule.prototype.add = function () {
         this.schedule.add();
     };
-    week_schedule = __decorate([
+    WeekSchedule.timezone = new Date().getTimezoneOffset() * 60;
+    WeekSchedule = __decorate([
         angular2_1.Component({
             selector: 'week-schedule',
             lifecycle: [angular2_1.LifecycleEvent.onChange],
         }),
         angular2_1.View({
             templateUrl: "components/week_schedule/week_schedule.html",
-            directives: [state_change_1.StateChangeCont, angular2_1.NgFor, angular2_1.NgIf, repeating_selector_1.RepeatingSelector]
+            directives: [state_1.StateView, angular2_1.NgFor, angular2_1.NgIf, days_time_selector_1.DaysTimeSelector]
         }), 
         __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users, router_1.Router, repeating_schedule_1.RepeatingSchedule])
-    ], week_schedule);
-    return week_schedule;
+    ], WeekSchedule);
+    return WeekSchedule;
 })();
-exports.week_schedule = week_schedule;
+exports.WeekSchedule = WeekSchedule;
 //# sourceMappingURL=week_schedule.js.map
