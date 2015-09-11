@@ -3,7 +3,7 @@
 var ThermostatBackend = (function () {
     function ThermostatBackend() {
         this.url = "http://pi.isaacpark.me:5000";
-        this.loading = false;
+        this.loading = 0;
         this.isLoggedIn = false;
     }
     return ThermostatBackend;

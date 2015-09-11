@@ -19,7 +19,7 @@ import {
 import {IndexComp} from "components/index/index";
 import {LoginComp} from "components/login/login";
 import {MainMenu} from "components/mainMenu/mainMenu";
-import {week_schedule} from "components/week_schedule/week_schedule";
+import {WeekSchedule} from "components/week_schedule/week_schedule";
 import {ThermostatBackend} from "services/thermostat_backend";
 import {Users} from "services/users";
 import {RepeatingSchedule} from "services/repeating_schedule";
@@ -35,7 +35,7 @@ import {Temps} from "services/temps"
 @RouteConfig([
     { path: '/', component: IndexComp, as: 'index' },
     { path: '/login', component: LoginComp, as: 'login'},
-    { path: '/schedule', component: week_schedule, as: 'schedule'}
+    { path: '/schedule', component: WeekSchedule, as: 'schedule'}
 ])
 // main component
 class App {}

@@ -24,7 +24,7 @@ export class Temps{
         this.lifeCycle = lifeCycle;
     }
     getTemps() {
-        this.backend.loading = true;
+        this.backend.loading+=1;
 
         $.ajax({
             url: this.backend.url + "/temps",
@@ -41,7 +41,7 @@ export class Temps{
                 });
 
                 console.log("got temps");
-                this.backend.loading = false;
+                this.backend.loading-=1;
             }
         });
     }

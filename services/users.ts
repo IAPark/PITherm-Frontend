@@ -25,7 +25,7 @@ export class Users{
     login(username: string, password: string) {
         this.username = username;
         this.password = password;
-        this.backend.loading = true;
+        this.backend.loading+=1;
         $.ajax({
             url: this.backend.url + "/user/",
             headers: {
@@ -37,12 +37,12 @@ export class Users{
                 this.isLoggedIn = true;
                 this.error = null;
                 this.router.navigate('/schedule');
-                this.backend.loading = false;
+                this.backend.loading-=1;
             },
             error: (json) =>{
                 this.isLoggedIn = false;
                 this.error = "Bad Username or Password";
-                this.backend.loading = false;
+                this.backend.loading-=1;
             }
         });
     }

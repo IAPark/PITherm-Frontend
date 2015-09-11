@@ -1,16 +1,16 @@
-<div *ng-for="#state_change of schedule.repeating_schedule; #i = index">
+<div *ng-for="#days_time_state of schedule.schedule; #i = index">
     <div class="row">
         <div class="col s12 m5">
-            <repeating-selector [week_time]="state_change.week_time"
-                                (change)="state_change.week_time=$event; state_change.dirty = true"></repeating-selector>
+            <days-time-selector [days_time]="days_time_state" (change)="days_time_state.dirty = true"></days-time-selector>
         </div>
         <div class="col s10 m5">
-            <state-change [state]="state_change.state" [index]="i" (change)="state_change.state=$event; state_change.dirty = true"></state-change>
+            <state [state]="days_time_state.state" (change)="days_time_state.dirty = true"></state>
         </div>
         <div class="col s2 input-field">
-            <a class="btn-floating waves-effect waves-light red" (^click)="remove(state_change)"><i
+            <a class="btn-floating waves-effect waves-light red" (^click)="remove(days_time_state)"><i
                     class="material-icons">remove</i></a>
-            <a *ng-if="state_change.dirty" (^click)="update(state_change)" class="btn-flat">
+
+            <a *ng-if="days_time_state.dirty" (^click)="update(days_time_state)" class="btn-flat">
                 <i class="material-icons">done</i>
             </a>
         </div>

@@ -35,7 +35,7 @@ var App = (function () {
         router_1.RouteConfig([
             { path: '/', component: index_1.IndexComp, as: 'index' },
             { path: '/login', component: login_1.LoginComp, as: 'login' },
-            { path: '/schedule', component: week_schedule_1.week_schedule, as: 'schedule' }
+            { path: '/schedule', component: week_schedule_1.WeekSchedule, as: 'schedule' }
         ]), 
         __metadata('design:paramtypes', [])
     ], App);

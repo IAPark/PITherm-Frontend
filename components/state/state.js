@@ -14,26 +14,32 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
  */
 /// <reference path="../../typings/angular2/angular2.d.ts" />
 var angular2_1 = require('angular2/angular2');
-var StateChangeCont = (function () {
-    function StateChangeCont() {
+var StateView = (function () {
+    function StateView() {
         this.change = new angular2_1.EventEmitter();
+        this.index = StateView.max_index;
+        StateView.max_index += 1;
     }
-    StateChangeCont.prototype.update = function () {
+    StateView.prototype.update = function () {
         this.change.next(this.state);
     };
-    StateChangeCont = __decorate([
+    StateView.prototype.parseInt = function (s) {
+        return parseInt(s);
+    };
+    StateView.max_index = 0;
+    StateView = __decorate([
         angular2_1.Component({
-            selector: 'state-change',
-            properties: ['state', 'index'],
+            selector: 'state',
+            properties: ['state'],
             events: ["change"],
         }),
         angular2_1.View({
-            templateUrl: "components/state-change/state-change.html",
+            templateUrl: "components/state/state.html",
             directives: [angular2_1.FORM_DIRECTIVES]
         }), 
         __metadata('design:paramtypes', [])
-    ], StateChangeCont);
-    return StateChangeCont;
+    ], StateView);
+    return StateView;
 })();
-exports.StateChangeCont = StateChangeCont;
-//# sourceMappingURL=state_change.js.map
+exports.StateView = StateView;
+//# sourceMappingURL=state.js.map

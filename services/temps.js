@@ -23,7 +23,7 @@ var Temps = (function () {
     }
     Temps.prototype.getTemps = function () {
         var _this = this;
-        this.backend.loading = true;
+        this.backend.loading += 1;
         $.ajax({
             url: this.backend.url + "/temps",
             type: 'get',
@@ -38,7 +38,7 @@ var Temps = (function () {
                     _this.dates[i] = log.date;
                 });
                 console.log("got temps");
-                _this.backend.loading = false;
+                _this.backend.loading -= 1;
             }
         });
     };
