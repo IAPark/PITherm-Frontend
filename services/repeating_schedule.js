@@ -132,6 +132,8 @@ var DaysTimeState = (function () {
     function DaysTimeState() {
         this.state_change_for_day = [];
         this.dirty = false;
+        // local time in seconds into the day
+        this._time = 0;
         this._days = [
             false,
             false,

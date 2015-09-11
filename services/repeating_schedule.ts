@@ -129,7 +129,7 @@ export class DaysTimeState {
     dirty = false;
 
     // local time in seconds into the day
-    private _time: number;
+    private _time: number = 0;
 
     _days: Array<boolean> = [
         false,
