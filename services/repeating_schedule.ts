@@ -5,6 +5,103 @@ import {Users} from "./users"
 import {Inject} from 'angular2/angular2';
 import {ThermostatBackend} from './thermostat_backend'
 
+@Inject(Users)
+@Inject(ThermostatBackend)
+export class RepeatingSchedule {
+    backend: ThermostatBackend;
+    users: Users;
+    schedule: Array<DaysTimeState>;
+
+    constructor(users:Users, backend:ThermostatBackend) {
+        this.users = users;
+        this.backend = backend;
+    }
+
+    update() {
+        this.backend.loading = true;
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'get',
+            dataType: 'json',
+            success: (json) => {
+                this.schedule = [];
+                json.data.forEach( (change) => {
+                    change = StateChangeRepeating.from_json(change);
+
+                    let days_time:DaysTimeState = new DaysTimeState();
+
+                    let exists = false;
+                    this.schedule.forEach( (change_day_time) => {
+                        if(change_day_time.add(change)){
+                            exists = true;
+                        }
+                    });
+
+                    // if we don't have an object for this state, day, and time
+                    if(!exists) {
+                        let change_event = new DaysTimeState();
+                        change_event.time = change.time;
+                        change_event.state = change.state;
+                        change_event.add(change);
+                        this.schedule.push(change_event);
+
+                    }
+                });
+                //this.repeating_schedule.forEach((change)=> change.dirty = false);
+                this.backend.loading = false;
+            }
+        });
+    }
+
+    save(schedule) {
+        this.backend.loading = true;
+        schedule.dirty = false;
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(schedule),
+            success: (json) => {
+                schedule['_id'] = json.data.$oid;
+                this.backend.loading = false;
+            }
+        });
+    }
+
+    remove(schedule) {
+        this.backend.loading = true;
+        //this.repeating_schedule.splice(this.repeating_schedule.indexOf(schedule), 1);
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'delete',
+            dataType: 'json',
+            data: JSON.stringify(schedule),
+            success: (json) => {
+                this.backend.loading = false;
+            }
+        });
+    }
+
+    add() {
+        var state_change = {
+            week_time: 0,
+            state: {AC_target: 0, heater_target: 0, fan: false},
+            dirty: true
+        };
+        //this.repeating_schedule.push(state_change);
+    }
+}
+
+
 export class StateChangeRepeating {
     _state: State; // the state it will change to
     _week_time; // seconds into the week
@@ -176,101 +273,4 @@ export enum Day{
     friday,
     saturday,
     sunday
-}
-
-
-@Inject(Users)
-@Inject(ThermostatBackend)
-export class RepeatingSchedule {
-    backend: ThermostatBackend;
-    users: Users;
-    schedule: Array<DaysTimeState>;
-
-    constructor(users:Users, backend:ThermostatBackend) {
-        this.users = users;
-        this.backend = backend;
-    }
-
-    update() {
-        this.backend.loading = true;
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'get',
-            dataType: 'json',
-            success: (json) => {
-                this.schedule = [];
-                json.data.forEach( (change) => {
-                    change = StateChangeRepeating.from_json(change);
-
-                    let days_time:DaysTimeState = new DaysTimeState();
-
-                    let exists = false;
-                    this.schedule.forEach( (change_day_time) => {
-                        if(change_day_time.add(change)){
-                            exists = true;
-                        }
-                    });
-
-                    // if we don't have an object for this state, day, and time
-                    if(!exists) {
-                        let change_event = new DaysTimeState();
-                        change_event.time = change.time;
-                        change_event.state = change.state;
-                        change_event.add(change);
-                        this.schedule.push(change_event);
-
-                    }
-                });
-                //this.repeating_schedule.forEach((change)=> change.dirty = false);
-                this.backend.loading = false;
-            }
-        });
-    }
-
-    save(schedule) {
-        this.backend.loading = true;
-        schedule.dirty = false;
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'post',
-            dataType: 'json',
-            data: JSON.stringify(schedule),
-            success: (json) => {
-                schedule['_id'] = json.data.$oid;
-                this.backend.loading = false;
-            }
-        });
-    }
-
-    remove(schedule) {
-        this.backend.loading = true;
-        //this.repeating_schedule.splice(this.repeating_schedule.indexOf(schedule), 1);
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'delete',
-            dataType: 'json',
-            data: JSON.stringify(schedule),
-            success: (json) => {
-                this.backend.loading = false;
-            }
-        });
-    }
-
-    add() {
-        var state_change = {
-            week_time: 0,
-            state: {AC_target: 0, heater_target: 0, fan: false},
-            dirty: true
-        };
-        //this.repeating_schedule.push(state_change);
-    }
 }
