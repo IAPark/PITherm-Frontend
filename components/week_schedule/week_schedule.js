@@ -34,15 +34,7 @@ var WeekSchedule = (function () {
         this.schedule.save(change);
     };
     WeekSchedule.prototype.remove = function (to_remove) {
-        var _this = this;
-        console.log(to_remove);
-        to_remove.days_time.onDay.forEach(function (onDay, day) {
-            console.log(to_remove.repeating_state_for_day[day]);
-            if (to_remove.repeating_state_for_day[day]) {
-                _this.schedule.remove(to_remove.repeating_state_for_day[day]);
-                to_remove.repeating_state_for_day[day] = null;
-            }
-        });
+        this.schedule.remove(to_remove);
     };
     WeekSchedule.prototype.add = function () {
         this.schedule.add();

@@ -41,14 +41,7 @@ export class WeekSchedule{
     }
 
     remove(to_remove){
-        console.log(to_remove);
-        to_remove.days_time.onDay.forEach((onDay, day) => {
-            console.log(to_remove.repeating_state_for_day[day]);
-            if(to_remove.repeating_state_for_day[day]) {
-                this.schedule.remove(to_remove.repeating_state_for_day[day]);
-                to_remove.repeating_state_for_day[day] = null;
-            }
-        });
+        this.schedule.remove(to_remove);
     }
 
     add() {

@@ -57,16 +57,21 @@ var RepeatingSchedule = (function () {
     RepeatingSchedule.prototype.save = function (state_changes) {
         var _this = this;
         state_changes.dirty = false;
-        state_changes.state_change_for_day.forEach(function (state_change, i) {
+        state_changes.state_change_for_day = state_changes.state_change_for_day.map(function (state_change, i) {
             if (state_change) {
                 if (state_changes.on_day(i)) {
                     _this.save_StateChangeRepeating(state_change);
                 }
                 else {
                     _this.remove_StateChange(state_change);
+                    return null;
                 }
             }
+            return state_change;
         });
+        if (state_changes.state_change_for_day.every(function (state_change) { return !state_change; })) {
+            this.schedule.splice(this.schedule.indexOf(state_changes), 1);
+        }
     };
     RepeatingSchedule.prototype.save_StateChangeRepeating = function (state_change) {
         var _this = this;
@@ -90,9 +95,6 @@ var RepeatingSchedule = (function () {
     RepeatingSchedule.prototype.remove_StateChange = function (state_change) {
         var _this = this;
         this.backend.loading += 1;
-        console.log("removing");
-        console.log(JSON.stringify(state_change));
-        console.log(state_change);
         $.ajax({
             url: this.backend.url + "/schedule/repeating/",
             headers: {
@@ -106,29 +108,17 @@ var RepeatingSchedule = (function () {
             }
         });
     };
-    RepeatingSchedule.prototype.remove = function (schedule) {
+    RepeatingSchedule.prototype.remove = function (state_changes) {
         var _this = this;
-        this.backend.loading += 1;
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'delete',
-            dataType: 'json',
-            data: JSON.stringify(schedule),
-            success: function (json) {
-                _this.backend.loading -= 1;
+        this.schedule.splice(this.schedule.indexOf(state_changes), 1);
+        state_changes.state_change_for_day.forEach(function (state_change, i) {
+            if (state_change) {
+                _this.remove_StateChange(state_change);
             }
         });
     };
     RepeatingSchedule.prototype.add = function () {
-        var state_change = {
-            week_time: 0,
-            state: { AC_target: 0, heater_target: 0, fan: false },
-            dirty: true
-        };
-        //this.repeating_schedule.push(state_change);
+        this.schedule.push(new DaysTimeState());
     };
     RepeatingSchedule = __decorate([
         angular2_1.Inject(users_1.Users),
@@ -151,6 +141,7 @@ var DaysTimeState = (function () {
             false,
             false
         ];
+        this._state = new State();
     }
     DaysTimeState.prototype.on_day = function (day) {
         return this._days[day];

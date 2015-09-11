@@ -58,15 +58,20 @@ export class RepeatingSchedule {
 
     save(state_changes: DaysTimeState) {
         state_changes.dirty = false;
-        state_changes.state_change_for_day.forEach((state_change: StateChangeRepeating, i) => {
+        state_changes.state_change_for_day = state_changes.state_change_for_day.map((state_change: StateChangeRepeating, i) => {
             if(state_change) {
                 if (state_changes.on_day(i)) {
                     this.save_StateChangeRepeating(state_change);
                 } else {
                     this.remove_StateChange(state_change);
+                    return null;
                 }
             }
+            return state_change;
         });
+        if(state_changes.state_change_for_day.every((state_change) => !state_change)) {
+            this.schedule.splice(this.schedule.indexOf(state_changes), 1);
+        }
     }
 
     save_StateChangeRepeating(state_change: StateChangeRepeating){
@@ -90,9 +95,6 @@ export class RepeatingSchedule {
 
     remove_StateChange(state_change: StateChangeRepeating){
         this.backend.loading+=1;
-        console.log("removing");
-        console.log(JSON.stringify(state_change));
-        console.log(state_change);
 
         $.ajax({
             url: this.backend.url + "/schedule/repeating/",
@@ -108,29 +110,17 @@ export class RepeatingSchedule {
         });
     }
 
-    remove(schedule) {
-        this.backend.loading+=1;
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'delete',
-            dataType: 'json',
-            data: JSON.stringify(schedule),
-            success: (json) => {
-                this.backend.loading-=1;
+    remove(state_changes: DaysTimeState) {
+        this.schedule.splice(this.schedule.indexOf(state_changes), 1);
+        state_changes.state_change_for_day.forEach((state_change: StateChangeRepeating, i) => {
+            if(state_change) {
+                this.remove_StateChange(state_change)
             }
         });
     }
 
     add() {
-        var state_change = {
-            week_time: 0,
-            state: {AC_target: 0, heater_target: 0, fan: false},
-            dirty: true
-        };
-        //this.repeating_schedule.push(state_change);
+        this.schedule.push(new DaysTimeState());
     }
 }
 
@@ -150,7 +140,7 @@ export class DaysTimeState {
         false,
         false
     ];
-    _state: State;
+    _state: State = new State();
     private static offset: number = new Date().getTimezoneOffset() * 60;
 
     on_day(day: Day){
