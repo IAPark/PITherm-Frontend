@@ -198,7 +198,8 @@ export class DaysTimeState {
             this.state_change_for_day[day].days_time_state = this;
             this._days[day] = true;
         } else {
-            this.state_change_for_day[day] = null;
+            this.state_change_for_day[day] = undefined;
+            this._days[day] = false;
         }
     }
 
@@ -232,12 +233,9 @@ export class DaysTimeState {
     add(state_change: StateChangeRepeating): boolean{
         if(state_change.time == this.time && state_change.state.equals(this.state)) {
             this.set_on_day(state_change.day, true);
-            console.log(state_change.day);
-            this._state = state_change.state;
+            state_change._state = this._state;
             return true;
         }
-        console.log(state_change.time + "!=" +this.time);
-        console.log(state_change.state + "!=" + this.state);
         return false;
     }
 }

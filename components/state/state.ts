@@ -33,5 +33,9 @@ export class StateView{
         this.change.next(this.state)
     }
 
+    parseInt(s): number {
+        return parseInt(s);
+    }
+
 
 }

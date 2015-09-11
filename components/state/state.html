@@ -1,14 +1,14 @@
 <div class="row">
     <div class="input-field col s12 m5">
-        <input id="AC_target" [(ng-model)]="state.AC_target" (input)="update()" type="number">
+        <input id="AC_target" (change)="state.AC_target = parseInt($event.target.value)" [value] = "state.AC_target" (input)="update()" type="number">
         <label for="AC_target" class="active">Air Conditional Target</label>
     </div>
     <div class="input-field col s10 m5">
-        <input id="heater_target" [(ng-model)]="state.heater_target" type="number" (input)="update()">
+        <input id="heater_target" (change)="state.heater_target = parseInt($event.target.value)" [value] = "state.heater_target" type="number" (input)="update()">
         <label for="heater_target" class="active">Heater Target</label>
     </div>
     <div class="input-field col s2">
-        <input [id]="'fan' + index" type="checkbox" [(ng-model)]="state.fan" (^click)="update()">
+        <input [id]="'fan' + index" type="checkbox" (change)="state.fan = $event.target.checked" [value]="state.fan" (^click)="update()">
         <label [attr.for]="'fan' + index">Fan</label>
     </div>
 </div>

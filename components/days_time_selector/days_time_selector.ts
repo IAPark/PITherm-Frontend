@@ -12,37 +12,37 @@ import {Component, View, EventEmitter, FORM_DIRECTIVES} from 'angular2/angular2'
         <div class="col s9" style="display: flex; flex-direction: row">
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'sunday' + index" type="checkbox" [checked]="days_time.on_day(6)"
-                (^click)="days_time.set_on_day(6, $event.target.checked); update()">
+                (change)="days_time.set_on_day(6, $event.target.checked); update()">
                 <label [attr.for]="'sunday' + index">S</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'monday' + index" type="checkbox" [checked]="days_time.on_day(0)"
-                (^click)="days_time.set_on_day(0, $event.target.checked); update()">
+                (change)="days_time.set_on_day(0, $event.target.checked); update()">
                 <label [attr.for]="'monday' + index">M</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'tuesday' + index" type="checkbox" [checked]="days_time.on_day(1)"
-                (^click)="days_time.set_on_day(1, $event.target.checked); update()">
+                (change)="days_time.set_on_day(1, $event.target.checked); update()">
                 <label [attr.for]="'tuesday' + index">T</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'wednesday' + index" type="checkbox" [checked]="days_time.on_day(2)"
-                (^click)="days_time.set_on_day(2, $event.target.checked); update()">
+                (change)="days_time.set_on_day(2, $event.target.checked); update()">
                 <label [attr.for]="'wednesday' + index">W</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'thursday' + index" type="checkbox" [checked]="days_time.on_day(3)"
-                (^click)="days_time.set_on_day(3, $event.target.checked); update()">
+                (change)="days_time.set_on_day(3, $event.target.checked); update()">
                 <label [attr.for]="'thursday' + index">T</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'friday' + index" type="checkbox" [checked]="days_time.on_day(4)"
-                (^click)="days_time.set_on_day(4, $event.target.checked); update()">
+                (change)="days_time.set_on_day(4, $event.target.checked); update()">
                 <label [attr.for]="'friday' + index">F</label>
             </div>
             <div class="input-field" style="flex-grow: 1">
                 <input [id]="'saturday' + index" type="checkbox" [checked]="days_time.on_day(5)"
-                (^click)="days_time.set_on_day(5, $event.target.checked); update()">
+                (change)="days_time.set_on_day(5, $event.target.checked); update()">
                 <label [attr.for]="'saturday' + index">S</label>
             </div>
         </div>

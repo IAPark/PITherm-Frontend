@@ -202,7 +202,8 @@ var DaysTimeState = (function () {
             this._days[day] = true;
         }
         else {
-            this.state_change_for_day[day] = null;
+            this.state_change_for_day[day] = undefined;
+            this._days[day] = false;
         }
     };
     Object.defineProperty(DaysTimeState.prototype, "time", {
@@ -243,12 +244,9 @@ var DaysTimeState = (function () {
     DaysTimeState.prototype.add = function (state_change) {
         if (state_change.time == this.time && state_change.state.equals(this.state)) {
             this.set_on_day(state_change.day, true);
-            console.log(state_change.day);
-            this._state = state_change.state;
+            state_change._state = this._state;
             return true;
         }
-        console.log(state_change.time + "!=" + this.time);
-        console.log(state_change.state + "!=" + this.state);
         return false;
     };
     DaysTimeState.offset = new Date().getTimezoneOffset() * 60;

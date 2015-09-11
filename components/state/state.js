@@ -23,6 +23,9 @@ var StateView = (function () {
     StateView.prototype.update = function () {
         this.change.next(this.state);
     };
+    StateView.prototype.parseInt = function (s) {
+        return parseInt(s);
+    };
     StateView.max_index = 0;
     StateView = __decorate([
         angular2_1.Component({
