@@ -54,21 +54,25 @@ var RepeatingSchedule = (function () {
             }
         });
     };
-    RepeatingSchedule.prototype.save = function (schedule) {
+    RepeatingSchedule.prototype.save = function (state_changes) {
         var _this = this;
         this.backend.loading = true;
-        schedule.dirty = false;
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'post',
-            dataType: 'json',
-            data: JSON.stringify(schedule),
-            success: function (json) {
-                schedule['_id'] = json.data.$oid;
-                _this.backend.loading = false;
+        state_changes.dirty = false;
+        state_changes.state_change_for_day.forEach(function (state_change) {
+            if (state_change) {
+                $.ajax({
+                    url: _this.backend.url + "/schedule/repeating/",
+                    headers: {
+                        "Authorization": "Basic " + btoa(_this.users.username + ":" + _this.users.password)
+                    },
+                    type: 'post',
+                    dataType: 'json',
+                    data: JSON.stringify(state_change),
+                    success: function (json) {
+                        state_change._id = json.data.$oid;
+                        _this.backend.loading = false;
+                    }
+                });
             }
         });
     };
@@ -105,74 +109,6 @@ var RepeatingSchedule = (function () {
     return RepeatingSchedule;
 })();
 exports.RepeatingSchedule = RepeatingSchedule;
-var StateChangeRepeating = (function () {
-    function StateChangeRepeating() {
-        this.dirty = false;
-    }
-    StateChangeRepeating.from_json = function (json) {
-        var result = new StateChangeRepeating();
-        result._week_time = json.week_time;
-        result._state = State.from_json(json.state);
-        result._id = json._id;
-        return result;
-    };
-    Object.defineProperty(StateChangeRepeating.prototype, "state", {
-        get: function () {
-            return this._state;
-        },
-        // we need to make sure that we stay in sync with our days_time counter part
-        set: function (state) {
-            this._state = state;
-            this.days_time_state._state = state;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(StateChangeRepeating.prototype, "week_time", {
-        get: function () {
-            return this._week_time;
-        },
-        set: function (week_time) {
-            if (this._week_time == week_time) {
-                return;
-            }
-            var old_day = this.day;
-            this.days_time_state.time = this.time;
-            this.days_time_state.set_on_day(old_day, false);
-            this.days_time_state.set_on_day(this.day, true);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(StateChangeRepeating.prototype, "day", {
-        // get local day
-        get: function () {
-            return Math.floor(this.local_week_time / (24 * 60 * 60));
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(StateChangeRepeating.prototype, "local_week_time", {
-        get: function () {
-            return (this.week_time + StateChangeRepeating.offset) % (24 * 7 * 60 * 60);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(StateChangeRepeating.prototype, "time", {
-        // get local time in day
-        get: function () {
-            return this.local_week_time % (24 * 60 * 60);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    StateChangeRepeating.prototype.deleter = function () {
-    };
-    StateChangeRepeating.offset = new Date().getTimezoneOffset() * 60;
-    return StateChangeRepeating;
-})();
-exports.StateChangeRepeating = StateChangeRepeating;
 var DaysTimeState = (function () {
     function DaysTimeState() {
         this.state_change_for_day = [];
@@ -196,9 +132,8 @@ var DaysTimeState = (function () {
         }
         if (active) {
             this.state_change_for_day[day] = new StateChangeRepeating();
-            this.state_change_for_day[day]._state = this._state;
-            this.state_change_for_day[day]._week_time = day * 24 * 60 * 60 + this._time;
-            this.state_change_for_day[day].days_time_state = this;
+            this.state_change_for_day[day].state = this._state;
+            this.state_change_for_day[day].week_time = day * 24 * 60 * 60 + this._time;
             this._days[day] = true;
         }
         else {
@@ -217,7 +152,7 @@ var DaysTimeState = (function () {
             }
             this.state_change_for_day.forEach(function (state_change, day) {
                 if (state_change) {
-                    state_change._week_time = day * 24 * 60 * 60 + _this._time - DaysTimeState.offset;
+                    state_change.week_time = day * 24 * 60 * 60 + _this._time - DaysTimeState.offset;
                 }
             });
             this._time = time;
@@ -232,7 +167,7 @@ var DaysTimeState = (function () {
         set: function (state) {
             this.state_change_for_day.forEach(function (state_change) {
                 if (state_change) {
-                    state_change._state = state;
+                    state_change.state = state;
                 }
             });
             this._state = state;
@@ -244,7 +179,7 @@ var DaysTimeState = (function () {
     DaysTimeState.prototype.add = function (state_change) {
         if (state_change.time == this.time && state_change.state.equals(this.state)) {
             this.set_on_day(state_change.day, true);
-            state_change._state = this._state;
+            state_change.state = this._state;
             return true;
         }
         return false;
@@ -253,6 +188,43 @@ var DaysTimeState = (function () {
     return DaysTimeState;
 })();
 exports.DaysTimeState = DaysTimeState;
+var StateChangeRepeating = (function () {
+    function StateChangeRepeating() {
+    }
+    StateChangeRepeating.from_json = function (json) {
+        var result = new StateChangeRepeating();
+        result.week_time = json.week_time;
+        result.state = State.from_json(json.state);
+        result._id = json._id;
+        return result;
+    };
+    Object.defineProperty(StateChangeRepeating.prototype, "day", {
+        // get local day
+        get: function () {
+            return Math.floor(this.local_week_time / (24 * 60 * 60));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StateChangeRepeating.prototype, "local_week_time", {
+        get: function () {
+            return (this.week_time + StateChangeRepeating.offset) % (24 * 7 * 60 * 60);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(StateChangeRepeating.prototype, "time", {
+        // get local time in day
+        get: function () {
+            return this.local_week_time % (24 * 60 * 60);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    StateChangeRepeating.offset = new Date().getTimezoneOffset() * 60;
+    return StateChangeRepeating;
+})();
+exports.StateChangeRepeating = StateChangeRepeating;
 var State = (function () {
     function State() {
         this.AC_target = 0;

@@ -31,7 +31,7 @@ var WeekSchedule = (function () {
         }
     }
     WeekSchedule.prototype.update = function (change) {
-        change.dirty = false;
+        this.schedule.save(change);
     };
     WeekSchedule.prototype.remove = function (to_remove) {
         var _this = this;

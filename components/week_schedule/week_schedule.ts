@@ -37,7 +37,7 @@ export class WeekSchedule{
     }
 
     update(change: DaysTimeState){
-        change.dirty = false;
+        this.schedule.save(change);
     }
 
     remove(to_remove){

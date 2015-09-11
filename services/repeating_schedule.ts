@@ -56,20 +56,24 @@ export class RepeatingSchedule {
         });
     }
 
-    save(schedule) {
+    save(state_changes: DaysTimeState) {
         this.backend.loading = true;
-        schedule.dirty = false;
-        $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
-            headers: {
-                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-            },
-            type: 'post',
-            dataType: 'json',
-            data: JSON.stringify(schedule),
-            success: (json) => {
-                schedule['_id'] = json.data.$oid;
-                this.backend.loading = false;
+        state_changes.dirty = false;
+        state_changes.state_change_for_day.forEach((state_change: StateChangeRepeating) => {
+            if(state_change) {
+                $.ajax({
+                    url: this.backend.url + "/schedule/repeating/",
+                    headers: {
+                        "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+                    },
+                    type: 'post',
+                    dataType: 'json',
+                    data: JSON.stringify(state_change),
+                    success: (json) => {
+                        state_change._id = json.data.$oid;
+                        this.backend.loading = false;
+                    }
+                });
             }
         });
     }
@@ -98,69 +102,6 @@ export class RepeatingSchedule {
             dirty: true
         };
         //this.repeating_schedule.push(state_change);
-    }
-}
-
-
-export class StateChangeRepeating {
-    _state: State; // the state it will change to
-    _week_time; // seconds into the week
-    private static offset:number = new Date().getTimezoneOffset() * 60;
-    days_time_state: DaysTimeState; // the days and time this should happen the primary way we represent this on the front end
-
-    static from_json(json): StateChangeRepeating{
-        let result = new StateChangeRepeating();
-
-        result._week_time = json.week_time;
-        result._state = State.from_json(json.state);
-        result._id = json._id;
-        return result;
-    }
-
-    // we need to make sure that we stay in sync with our days_time counter part
-    set state(state:State) {
-        this._state = state;
-        this.days_time_state._state = state;
-    }
-
-    get state() {
-        return this._state;
-    }
-
-    get week_time():number {
-        return this._week_time;
-    }
-
-
-    // get local day
-    get day():Day {
-        return Math.floor(this.local_week_time / (24 * 60 * 60));
-    }
-
-    get local_week_time() {
-        return (this.week_time + StateChangeRepeating.offset) % (24 * 7 * 60 * 60);
-    }
-
-    // get local time in day
-    get time():number {
-        return this.local_week_time % (24 * 60 * 60);
-    }
-
-    set week_time(week_time:number) {
-        if (this._week_time == week_time) {
-            return;
-        }
-        let old_day = this.day;
-
-        this.days_time_state.time = this.time;
-        this.days_time_state.set_on_day(old_day, false);
-        this.days_time_state.set_on_day(this.day, true);
-    }
-    dirty = false;
-    _id: string;
-
-    deleter(){
-
     }
 }
 
@@ -193,9 +134,8 @@ export class DaysTimeState {
 
         if(active) {
             this.state_change_for_day[day] = new StateChangeRepeating();
-            this.state_change_for_day[day]._state = this._state;
-            this.state_change_for_day[day]._week_time = day * 24*60*60 + this._time;
-            this.state_change_for_day[day].days_time_state = this;
+            this.state_change_for_day[day].state = this._state;
+            this.state_change_for_day[day].week_time = day * 24*60*60 + this._time;
             this._days[day] = true;
         } else {
             this.state_change_for_day[day] = undefined;
@@ -212,7 +152,7 @@ export class DaysTimeState {
         }
         this.state_change_for_day.forEach((state_change, day) => {
             if(state_change){
-                state_change._week_time = day * 24*60*60 + this._time - DaysTimeState.offset;
+                state_change.week_time = day * 24*60*60 + this._time - DaysTimeState.offset;
             }
         });
         this._time = time;
@@ -223,7 +163,7 @@ export class DaysTimeState {
     set state(state: State) {
         this.state_change_for_day.forEach((state_change) => {
             if(state_change){
-                state_change._state = state;
+                state_change.state = state;
             }
         });
         this._state = state;
@@ -233,10 +173,40 @@ export class DaysTimeState {
     add(state_change: StateChangeRepeating): boolean{
         if(state_change.time == this.time && state_change.state.equals(this.state)) {
             this.set_on_day(state_change.day, true);
-            state_change._state = this._state;
+            state_change.state = this._state;
             return true;
         }
         return false;
+    }
+}
+
+export class StateChangeRepeating {
+    state: State; // the state it will change to
+    week_time; // seconds into the week
+    private static offset:number = new Date().getTimezoneOffset() * 60;
+    _id: string;
+
+    static from_json(json): StateChangeRepeating{
+        let result = new StateChangeRepeating();
+
+        result.week_time = json.week_time;
+        result.state = State.from_json(json.state);
+        result._id = json._id;
+        return result;
+    }
+
+    // get local day
+    get day():Day {
+        return Math.floor(this.local_week_time / (24 * 60 * 60));
+    }
+
+    get local_week_time() {
+        return (this.week_time + StateChangeRepeating.offset) % (24 * 7 * 60 * 60);
+    }
+
+    // get local time in day
+    get time():number {
+        return this.local_week_time % (24 * 60 * 60);
     }
 }
 
