@@ -152,9 +152,11 @@ export class DaysTimeState {
         }
 
         if(active) {
-            this.state_change_for_day[day] = new StateChangeRepeating();
-            this.state_change_for_day[day].state = this._state;
-            this.state_change_for_day[day].week_time = day * 24*60*60 + this._time;
+            if(!this.state_change_for_day[day]) {
+                this.state_change_for_day[day] = new StateChangeRepeating();
+                this.state_change_for_day[day].state = this._state;
+                this.state_change_for_day[day].week_time = day * 24 * 60 * 60 + this._time - DaysTimeState.offset;
+            }
             this._days[day] = true;
         } else {
             this._days[day] = false;
