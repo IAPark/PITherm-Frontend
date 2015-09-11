@@ -21,7 +21,7 @@ var RepeatingSchedule = (function () {
     }
     RepeatingSchedule.prototype.update = function () {
         var _this = this;
-        this.backend.loading = true;
+        this.backend.loading += 1;
         $.ajax({
             url: this.backend.url + "/schedule/repeating/",
             headers: {
@@ -50,36 +50,65 @@ var RepeatingSchedule = (function () {
                     }
                 });
                 //this.repeating_schedule.forEach((change)=> change.dirty = false);
-                _this.backend.loading = false;
+                _this.backend.loading -= 1;
             }
         });
     };
     RepeatingSchedule.prototype.save = function (state_changes) {
         var _this = this;
-        this.backend.loading = true;
         state_changes.dirty = false;
-        state_changes.state_change_for_day.forEach(function (state_change) {
+        state_changes.state_change_for_day.forEach(function (state_change, i) {
             if (state_change) {
-                $.ajax({
-                    url: _this.backend.url + "/schedule/repeating/",
-                    headers: {
-                        "Authorization": "Basic " + btoa(_this.users.username + ":" + _this.users.password)
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    data: JSON.stringify(state_change),
-                    success: function (json) {
-                        state_change._id = json.data.$oid;
-                        _this.backend.loading = false;
-                    }
-                });
+                if (state_changes.on_day(i)) {
+                    _this.save_StateChangeRepeating(state_change);
+                }
+                else {
+                    _this.remove_StateChange(state_change);
+                }
+            }
+        });
+    };
+    RepeatingSchedule.prototype.save_StateChangeRepeating = function (state_change) {
+        var _this = this;
+        this.backend.loading += 1;
+        console.log("saving");
+        console.log(JSON.stringify(state_change));
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(state_change),
+            success: function (json) {
+                state_change._id = json.data.$oid;
+                _this.backend.loading -= 1;
+            }
+        });
+    };
+    RepeatingSchedule.prototype.remove_StateChange = function (state_change) {
+        var _this = this;
+        this.backend.loading += 1;
+        console.log("removing");
+        console.log(JSON.stringify(state_change));
+        console.log(state_change);
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'delete',
+            dataType: 'json',
+            data: JSON.stringify(state_change),
+            success: function (json) {
+                _this.backend.loading -= 1;
             }
         });
     };
     RepeatingSchedule.prototype.remove = function (schedule) {
         var _this = this;
-        this.backend.loading = true;
-        //this.repeating_schedule.splice(this.repeating_schedule.indexOf(schedule), 1);
+        this.backend.loading += 1;
         $.ajax({
             url: this.backend.url + "/schedule/repeating/",
             headers: {
@@ -89,7 +118,7 @@ var RepeatingSchedule = (function () {
             dataType: 'json',
             data: JSON.stringify(schedule),
             success: function (json) {
-                _this.backend.loading = false;
+                _this.backend.loading -= 1;
             }
         });
     };
@@ -137,7 +166,6 @@ var DaysTimeState = (function () {
             this._days[day] = true;
         }
         else {
-            this.state_change_for_day[day] = undefined;
             this._days[day] = false;
         }
     };
@@ -178,8 +206,9 @@ var DaysTimeState = (function () {
     // adds the state given if it has an equal state and it is at the same time
     DaysTimeState.prototype.add = function (state_change) {
         if (state_change.time == this.time && state_change.state.equals(this.state)) {
-            this.set_on_day(state_change.day, true);
+            this._days[state_change.day] = true;
             state_change.state = this._state;
+            this.state_change_for_day[state_change.day] = state_change;
             return true;
         }
         return false;

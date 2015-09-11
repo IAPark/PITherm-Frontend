@@ -18,7 +18,7 @@ export class RepeatingSchedule {
     }
 
     update() {
-        this.backend.loading = true;
+        this.backend.loading+=1;
         $.ajax({
             url: this.backend.url + "/schedule/repeating/",
             headers: {
@@ -51,36 +51,65 @@ export class RepeatingSchedule {
                     }
                 });
                 //this.repeating_schedule.forEach((change)=> change.dirty = false);
-                this.backend.loading = false;
+                this.backend.loading-=1;
             }
         });
     }
 
     save(state_changes: DaysTimeState) {
-        this.backend.loading = true;
         state_changes.dirty = false;
-        state_changes.state_change_for_day.forEach((state_change: StateChangeRepeating) => {
+        state_changes.state_change_for_day.forEach((state_change: StateChangeRepeating, i) => {
             if(state_change) {
-                $.ajax({
-                    url: this.backend.url + "/schedule/repeating/",
-                    headers: {
-                        "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    data: JSON.stringify(state_change),
-                    success: (json) => {
-                        state_change._id = json.data.$oid;
-                        this.backend.loading = false;
-                    }
-                });
+                if (state_changes.on_day(i)) {
+                    this.save_StateChangeRepeating(state_change);
+                } else {
+                    this.remove_StateChange(state_change);
+                }
+            }
+        });
+    }
+
+    save_StateChangeRepeating(state_change: StateChangeRepeating){
+        this.backend.loading+=1;
+        console.log("saving");
+        console.log(JSON.stringify(state_change));
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'post',
+            dataType: 'json',
+            data: JSON.stringify(state_change),
+            success: (json) => {
+                state_change._id = json.data.$oid;
+                this.backend.loading-=1;
+            }
+        });
+    }
+
+    remove_StateChange(state_change: StateChangeRepeating){
+        this.backend.loading+=1;
+        console.log("removing");
+        console.log(JSON.stringify(state_change));
+        console.log(state_change);
+
+        $.ajax({
+            url: this.backend.url + "/schedule/repeating/",
+            headers: {
+                "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
+            },
+            type: 'delete',
+            dataType: 'json',
+            data: JSON.stringify(state_change),
+            success: (json) => {
+                this.backend.loading-=1;
             }
         });
     }
 
     remove(schedule) {
-        this.backend.loading = true;
-        //this.repeating_schedule.splice(this.repeating_schedule.indexOf(schedule), 1);
+        this.backend.loading+=1;
         $.ajax({
             url: this.backend.url + "/schedule/repeating/",
             headers: {
@@ -90,7 +119,7 @@ export class RepeatingSchedule {
             dataType: 'json',
             data: JSON.stringify(schedule),
             success: (json) => {
-                this.backend.loading = false;
+                this.backend.loading-=1;
             }
         });
     }
@@ -138,7 +167,6 @@ export class DaysTimeState {
             this.state_change_for_day[day].week_time = day * 24*60*60 + this._time;
             this._days[day] = true;
         } else {
-            this.state_change_for_day[day] = undefined;
             this._days[day] = false;
         }
     }
@@ -172,8 +200,9 @@ export class DaysTimeState {
     // adds the state given if it has an equal state and it is at the same time
     add(state_change: StateChangeRepeating): boolean{
         if(state_change.time == this.time && state_change.state.equals(this.state)) {
-            this.set_on_day(state_change.day, true);
+            this._days[state_change.day] = true;
             state_change.state = this._state;
+            this.state_change_for_day[state_change.day] = state_change;
             return true;
         }
         return false;
@@ -184,7 +213,7 @@ export class StateChangeRepeating {
     state: State; // the state it will change to
     week_time; // seconds into the week
     private static offset:number = new Date().getTimezoneOffset() * 60;
-    _id: string;
+    public _id: string;
 
     static from_json(json): StateChangeRepeating{
         let result = new StateChangeRepeating();
