@@ -16,11 +16,14 @@ if (typeof __metadata !== "function") __metadata = function (k, v) {
 };
 var angular2_1 = require('angular2/angular2');
 var router_1 = require('angular2/router');
+var router_2 = require('angular2/router');
 var thermostat_backend_1 = require('services/thermostat_backend');
 var users_1 = require('services/users');
 var MainMenu = (function () {
-    function MainMenu(backend, users) {
-        $(".button-collapse").sideNav();
+    function MainMenu(backend, users, router) {
+        this.router = router;
+        this.button_collapse = $(".button-collapse");
+        this.button_collapse.sideNav();
         this.backend = backend;
         this.users = users;
         this.title = "PITherm";
@@ -37,15 +40,30 @@ var MainMenu = (function () {
             }
         ];
     }
+    MainMenu.prototype.toggle = function () {
+        this.button_collapse.click();
+    };
+    MainMenu.prototype.class_for_link = function (link) {
+        var path = this.router._currentInstruction.component._recognizer.path;
+        if (path === '/') {
+            path = '/home';
+        }
+        if (path === link.component) {
+            return "active";
+        }
+        else {
+            return "";
+        }
+    };
     MainMenu = __decorate([
         angular2_1.Component({
             selector: 'main-menu'
         }),
         angular2_1.View({
             templateUrl: 'components/mainMenu/mainMenu.html',
-            directives: [router_1.RouterLink, angular2_1.NgFor, angular2_1.NgIf]
+            directives: [router_2.RouterLink, angular2_1.NgFor, angular2_1.NgIf]
         }), 
-        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users])
+        __metadata('design:paramtypes', [thermostat_backend_1.ThermostatBackend, users_1.Users, router_1.Router])
     ], MainMenu);
     return MainMenu;
 })();

@@ -6,6 +6,7 @@
 
 
 import {Component, View, NgFor, NgIf} from 'angular2/angular2';
+import {Router} from 'angular2/router'
 
 import {RouterLink,} from 'angular2/router';
 import {ThermostatBackend} from 'services/thermostat_backend'
@@ -24,8 +25,11 @@ export class MainMenu{
     title: string;
     backend: ThermostatBackend;
     users: Users;
-    constructor(backend: ThermostatBackend, users: Users) {
-        $(".button-collapse").sideNav();
+    button_collapse: JQuery;
+    constructor(backend: ThermostatBackend, users: Users, private router: Router) {
+        this.button_collapse = $(".button-collapse");
+
+        this.button_collapse.sideNav();
         this.backend = backend;
         this.users = users;
         this.title = "PITherm";
@@ -41,5 +45,21 @@ export class MainMenu{
                 require_login: true
             }
         ];
+    }
+
+    toggle() {
+        this.button_collapse.click();
+    }
+
+    class_for_link(link): string {
+        let path = this.router._currentInstruction.component._recognizer.path;
+        if(path === '/') {
+            path = '/home'
+        }
+        if(path === link.component) {
+            return "active";
+        } else{
+            return "";
+        }
     }
 }
