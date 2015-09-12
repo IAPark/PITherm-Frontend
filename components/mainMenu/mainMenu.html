@@ -1,22 +1,22 @@
 <nav>
     <div class="nav-wrapper">
 
-        <a  [router-link]="['/home']" class="brand-logo" style="padding-left: 20px">{{title}}</a>
+        <a  [router-link]="['/index']" class="brand-logo">{{title}}</a>
 
         <a href="#" data-activates="side-bar" class="button-collapse"><i class="material-icons">menu</i></a>
 
         <ul class="right hide-on-med-and-down">
-            <li *ng-for="#link of links" [class]="class_for_link(link)">
-                <a [router-link]="[link.component]">{{link.text}}</a>
-            </li>
+            <span  *ng-for="#link of links">
+                <li *ng-if="!link.require_login || users.isLoggedIn"><a [router-link]="[link.component]">{{link.text}}</a></li>
+            </span>
         </ul>
 
         <ul class="side-nav" id="side-bar">
-            <li *ng-for="#link of links" [class]="class_for_link(link)">
-                <a [router-link]="[link.component]" style="color: #444;" (click)="toggle()">{{link.text}}</a>
-            </li>
+            <span  *ng-for="#link of links">
+                <li *ng-if="!link.require_login || users.isLoggedIn"><a [router-link]="[link.component]">{{link.text}}</a></li>
+            </span>
         </ul>
-        <div *ng-if="router.navigating" class="progress">
+        <div *ng-if="backend.loading>0" class="progress">
             <div class="indeterminate"></div>
         </div>
     </div>
