@@ -31,7 +31,7 @@ export class Temps{
             type: 'get',
             dataType: 'json',
             success: (json) => {
-                this.temp_logs = json.data;
+                this.temp_logs = json.data.slice(0, 100);
                 console.log(this.temp_logs);
                 this.temps = [];
                 this.dates = [];

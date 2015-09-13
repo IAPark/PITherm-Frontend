@@ -18,6 +18,6 @@ export class IndexComp {
     temps: Temps;
     constructor(temps: Temps) {
         this.temps = temps;
-        //temps.getTemps();
+        temps.getTemps();
     }
 }

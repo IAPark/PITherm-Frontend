@@ -29,7 +29,7 @@ var Temps = (function () {
             type: 'get',
             dataType: 'json',
             success: function (json) {
-                _this.temp_logs = json.data;
+                _this.temp_logs = json.data.slice(0, 100);
                 console.log(_this.temp_logs);
                 _this.temps = [];
                 _this.dates = [];
