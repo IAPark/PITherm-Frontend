@@ -23,7 +23,7 @@ var RepeatingSchedule = (function () {
         var _this = this;
         this.backend.loading += 1;
         $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
+            url: this.backend.url + "/schedule/weekly/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
             },
@@ -79,11 +79,12 @@ var RepeatingSchedule = (function () {
         console.log("saving");
         console.log(JSON.stringify(state_change));
         $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
+            url: this.backend.url + "/schedule/weekly/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
             },
             type: 'post',
+            contentType: "application/json",
             dataType: 'json',
             data: JSON.stringify(state_change),
             success: function (json) {
@@ -95,16 +96,23 @@ var RepeatingSchedule = (function () {
     RepeatingSchedule.prototype.remove_StateChange = function (state_change) {
         var _this = this;
         this.backend.loading += 1;
+        console.log("deleting a state");
+        console.log(JSON.stringify(state_change));
         $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
+            url: this.backend.url + "/schedule/weekly/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
             },
             type: 'delete',
+            contentType: "application/json",
             dataType: 'json',
             data: JSON.stringify(state_change),
             success: function (json) {
                 _this.backend.loading -= 1;
+                console.log("success");
+            },
+            error: function (json) {
+                console.log("failed");
             }
         });
     };

@@ -26,6 +26,7 @@ var Users = (function () {
         this.username = username;
         this.password = password;
         this.backend.loading += 1;
+        console.log("Logging in");
         $.ajax({
             url: this.backend.url + "/user/",
             headers: {
@@ -37,11 +38,13 @@ var Users = (function () {
                 _this.isLoggedIn = true;
                 _this.error = null;
                 _this.router.navigate('/schedule');
+                console.log("Logged In");
                 _this.backend.loading -= 1;
             },
             error: function (json) {
                 _this.isLoggedIn = false;
                 _this.error = "Bad Username or Password";
+                console.log("Log in failed");
                 _this.backend.loading -= 1;
             }
         });

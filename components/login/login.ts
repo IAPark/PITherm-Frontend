@@ -16,23 +16,21 @@ import {ThermostatBackend} from '../../services/thermostat_backend'
     template: `
     <div class="row">
         <form id="login">
-            <div *ng-if="!backend.loading" class="col s4 offset-s4">
-                <div *ng-if="users.error" class="card-panel red white-text">
-                    {{users.error}}
-                </div>
-                <div class="row input-field">
-                    <input id="username" type="text" [(ng-model)]="username">
-                    <label for="username" {{username?("active"):("")}}>Username</label>
-                </div>
-                <div class="row input-field">
-                    <input id="password" type="password" [(ng-model)]="password">
-                    <label for="password" {{password?("active"):("")}}>password</label>
-                </div>
-                <div class="row input-field">
-                    <button class="btn waves-effect waves-light" (click)="login()">Submit
-                        <i class="material-icons">send</i>
-                    </button>
-                </div>
+            <div *ng-if="users.error" class="card-panel red white-text">
+                {{users.error}}
+            </div>
+            <div class="row input-field">
+                <input id="username" type="text" [(ng-model)]="username">
+                <label for="username" {{username?("active"):("")}}>Username</label>
+            </div>
+            <div class="row input-field">
+                <input id="password" type="password" [(ng-model)]="password">
+                <label for="password" {{password?("active"):("")}}>password</label>
+            </div>
+            <div class="row input-field">
+                <button class="btn waves-effect waves-light" (click)="login()">Submit
+                    <i class="material-icons">send</i>
+                </button>
             </div>
         </form>
     </div>`,

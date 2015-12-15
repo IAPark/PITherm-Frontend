@@ -18,7 +18,7 @@ export interface RepeatingState extends StateChange{
 
 
 export class ThermostatBackend {
-    url: string = "http://pi.isaacpark.me:5000";
+    url: string = "http://pi-backend.isaacpark.me/:80";
     loading: number = 0;
 
     isLoggedIn: boolean = false;

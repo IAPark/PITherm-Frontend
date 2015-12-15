@@ -20,7 +20,7 @@ export class RepeatingSchedule {
     update() {
         this.backend.loading+=1;
         $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
+            url: this.backend.url + "/schedule/weekly/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
             },
@@ -79,11 +79,12 @@ export class RepeatingSchedule {
         console.log("saving");
         console.log(JSON.stringify(state_change));
         $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
+            url: this.backend.url + "/schedule/weekly/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
             },
             type: 'post',
+            contentType: "application/json",
             dataType: 'json',
             data: JSON.stringify(state_change),
             success: (json) => {
@@ -95,17 +96,23 @@ export class RepeatingSchedule {
 
     remove_StateChange(state_change: StateChangeRepeating){
         this.backend.loading+=1;
-
+        console.log("deleting a state");
+        console.log(JSON.stringify(state_change));
         $.ajax({
-            url: this.backend.url + "/schedule/repeating/",
+            url: this.backend.url + "/schedule/weekly/",
             headers: {
                 "Authorization": "Basic " + btoa(this.users.username + ":" + this.users.password)
             },
             type: 'delete',
+            contentType: "application/json",
             dataType: 'json',
             data: JSON.stringify(state_change),
             success: (json) => {
                 this.backend.loading-=1;
+                console.log("success");
+            },
+            error(json) {
+                console.log("failed");
             }
         });
     }
